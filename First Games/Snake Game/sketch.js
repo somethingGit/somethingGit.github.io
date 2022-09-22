@@ -5,8 +5,9 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+let totalSquares = prompt("Please input square amount");
+
 function start() {
-  prompt("Please input area")
   setup();
 }
 
@@ -26,5 +27,5 @@ function snakeOutOfBounds() {
 }
 
 function backToBeginning() {
-  snakeX = windowWidth/2 - width / 2
+  snakeX = windowWidth/2 - width / 2;
 }
