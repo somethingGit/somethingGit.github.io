@@ -5,6 +5,10 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+function start() {
+  prompt("Please input area")
+  setup();
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -22,5 +26,5 @@ function snakeOutOfBounds() {
 }
 
 function backToBeginning() {
-  snake 
+  snakeX = windowWidth/2 - width / 2
 }
