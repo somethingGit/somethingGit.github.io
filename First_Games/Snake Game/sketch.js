@@ -5,7 +5,10 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let totalSquares = prompt("Please input square amount");
+let totalSquaresWidth = prompt("Please input width: ");
+let totalSquaresHeight = prompt("Please input height: ");
+let gridWidth = windowWidth / totalSquaresWidth;
+let gridHeight = windowHeight / totalSquaresHeight;
 
 function start() {
   setup();
@@ -21,11 +24,13 @@ function draw() {
 }
 
 function snakeOutOfBounds() {
+  let snakeX = windowWidth/2 - width / 2;
+  let snakeY = 0;
   if(snakeX > windowWidth || snakeY > windowHeight || snakeX < 0 || snakeY < 0) {
-    backToBeginning();
+    backToBeginning(snakeX);
   }
 }
 
-function backToBeginning() {
+function backToBeginning(snakeX) {
   snakeX = windowWidth/2 - width / 2;
 }
