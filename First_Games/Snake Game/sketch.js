@@ -5,48 +5,57 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+// eslint-disable-next-line no-var
 var savedSnakeLocationX = [];
+// eslint-disable-next-line no-var
 var savedSnakeLocationY = [];
 
-//var snakeX = 0;
-//var snakeY = 0;
-
+// eslint-disable-next-line no-var
 var goX = 1;
+// eslint-disable-next-line no-var
 var goY = 0;
+// eslint-disable-next-line no-var
+var fixTurn;
+// eslint-disable-next-line no-var
+var lastDirectionX = 1;
+// eslint-disable-next-line no-var
+var lastDirectionY = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //snakeX = windowWidth / 2 - width / 2;
-  //snakeY = windowHeight / 2 - height / 2;
   frameRate(1);
   savedSnakeLocationX = [2,1,0];
   savedSnakeLocationY = [0,0,0];
+  fixTurn = savedSnakeLocationX.length;
 }
 
 function draw() {
   background(220);
+  makeGrid();
+}
+
+function makeGrid() {
   let totalSquaresWidth = 20;//prompt("Please input width: ");
   let totalSquaresHeight = 20;//prompt("Please input height: ");
   let gridWidth = windowWidth / totalSquaresWidth;
   let gridHeight = windowHeight / totalSquaresHeight;
-  let snakeLength = 3;
+  let snakeLength = savedSnakeLocationX.length;
   gridWidth = windowWidth / totalSquaresWidth;
   gridHeight = windowHeight / totalSquaresHeight;
   for(let x = 0; x < width; x += gridWidth) {
     for(let y = 0; y < height; y += gridHeight) {
       strokeWeight(1);
-      stroke(160)
+      stroke(160);
       fill(255);
       rect(x, y, gridWidth, gridHeight);
     }
   }
-  //for(let x = snakeX; x < snakeX + snakeLength * gridWidth; x += gridWidth) {
   makeSnake(gridWidth, gridHeight);
-  //}
-  //snakeOutOfBounds(snakeX, snakeY);
 }
 
 function makeSnake(gridWidth, gridHeight) {
+  fill("green");
+  rect(headPosition * gridWidth)
   for(let i = 0; i < savedSnakeLocationX.length; i++) {
     fill("green");
     rect(savedSnakeLocationX[i] * gridWidth, savedSnakeLocationY[i] * gridHeight, gridWidth, gridHeight);
@@ -55,47 +64,63 @@ function makeSnake(gridWidth, gridHeight) {
 }
 
 function normalMove(gridWidth, gridHeight) {
-  
+  /*
   if(goX === 1) {
-    //snakeX += gridWidth;
-    for(let i = 0; i < savedSnakeLocationX.length; i++) {
-      //savedSnakeLocationX[i] = savedSnakeLocationX[i -= 1];
-      //savedSnakeLocationY[i] = savedSnakeLocationY[i -= 1];
+    for(let i = 0; i < fixTurn; i++) {
       savedSnakeLocationX[i] = savedSnakeLocationX[i] + 1;
     }
-    //savedSnakeLocationX[0] = (savedSnakeLocationX[savedSnakeLocationX.length] += gridWidth);
   }
   else if(goX === -1) {
-    //snakeX += (gridWidth * -1);
-    for(let i = 0; i < savedSnakeLocationX.length; i++) {
-      //savedSnakeLocationX[i] = savedSnakeLocationX[i -= 1];
-      //savedSnakeLocationY[i] = savedSnakeLocationY[i -= 1];
+    for(let i = 0; i < fixTurn; i++) {
       savedSnakeLocationX[i] = savedSnakeLocationX[i] - 1;
       console.log(savedSnakeLocationX[i]);
     }
-    //savedSnakeLocationX[0] = (savedSnakeLocationX[savedSnakeLocationX.length] += gridWidth * -1);
   }
   else if(goY === 1) {
-    //snakeY += gridHeight;
-    for(let i = 0; i < savedSnakeLocationY.length; i++) {
-      //savedSnakeLocationX[i] = savedSnakeLocationX[i -= 1];
-      //savedSnakeLocationY[i] = savedSnakeLocationY[i -= 1];
+    for(let i = 0; i < fixTurn; i++) {
       savedSnakeLocationY[i] = savedSnakeLocationY[i] - 1;
     }
-    //savedSnakeLocationY[0] = (savedSnakeLocationY[savedSnakeLocationY.length] += gridHeight);
   }
   else if(goY === -1) {
-    //snakeY += (gridHeight * -1);
-    for(let i = 0; i < savedSnakeLocationY.length; i++) {
-      //savedSnakeLocationX[i] = savedSnakeLocationX[i -= 1];
-      //savedSnakeLocationY[i] = savedSnakeLocationY[i -= 1];
+    for(let i = 0; i < fixTurn; i++) {
       savedSnakeLocationY[i] = savedSnakeLocationY[i] + 1;
     }
-    //savedSnakeLocationY[0] = (savedSnakeLocationY[savedSnakeLocationY.length] += gridHeight * -1);
   }
+  
+  
+  if(lastDirectionX === 1 && fixTurn < savedSnakeLocationX.length) {
+    for(let i = 0; i < savedSnakeLocationX.length - fixTurn; i++) {
+      savedSnakeLocationX[savedSnakeLocationX - i] = savedSnakeLocationX[savedSnakeLocationX - i] + 1;
+    }
+  }
+  else if(lastDirectionX === -1 && fixTurn < savedSnakeLocationX.length) {
+    for(let i = 0; i < savedSnakeLocationX.length - fixTurn; i++) {
+      savedSnakeLocationX[savedSnakeLocationX - i] = savedSnakeLocationX[savedSnakeLocationX - i] - 1;
+    }
+  }
+  else if(lastDirectionY === 1 && fixTurn < savedSnakeLocationX.length) {
+    for(let i = 0; i < savedSnakeLocationX.length - fixTurn; i++) {
+      savedSnakeLocationY[savedSnakeLocationX - i] = savedSnakeLocationY[savedSnakeLocationX - i] + 1;
+    }
+  }
+  else if(lastDirectionY === -1 && fixTurn < savedSnakeLocationX.length) {
+    for(let i = 0; i < savedSnakeLocationX.length - fixTurn; i++) {
+      savedSnakeLocationY[savedSnakeLocationX - i] = savedSnakeLocationY[savedSnakeLocationX - i] - 1;
+    }
+  }
+
+  if(fixTurn < savedSnakeLocationX.length) {
+    fixTurn++;
+  }
+  else if(fixTurn === savedSnakeLocationX.length) {
+    lastDirectionX = goX;
+    lastDirectionY = goY;
+  }
+  console.log(fixTurn);
+  */
+ lastDirectionX.push(headPosition);
 }
 
-/*
 function snakeOutOfBounds(snakeX, snakeY) {
   if(snakeX > windowWidth || snakeY > windowHeight || snakeX < 0 || snakeY < 0) {
     backToBeginning(snakeX);
@@ -109,34 +134,42 @@ function snakeOutOfBounds(snakeX, snakeY) {
 }
 
 function backToBeginning(snakeX) {
-  snakeX = windowWidth/2 - width / 2;
-  snakeY = windowHeight / 2 - height / 2;
-} */
+  savedSnakeLocationX = [2,1,0];
+  savedSnakeLocationY = [0,0,0];
+}
 
 function keyPressed() {
-  if(keyCode === RIGHT_ARROW) {
+  switch(keyCode) {
+  case RIGHT_ARROW:
     if(goX !== -1) {
       goX = 1;
       goY = 0;
+      fixTurn = 0;
     }
-  } 
-  else if(keyCode === LEFT_ARROW) {
+    break;
+  case LEFT_ARROW:
     if(goX !== 1) {
       goX = -1;
       goY = 0;
+      fixTurn = 0;
     }
-  }
-  else if(keyCode === UP_ARROW) {
+    break;
+  case UP_ARROW:
     if(goY !== -1) {
       goX = 0;
       goY = 1;
+      fixTurn = 0;
     }
-  }
-  else if(keyCode === DOWN_ARROW) {
+    break;
+  case DOWN_ARROW:
     if(goY !== 1) {
       goX = 0;
       goY = -1;
+      fixTurn = 0;
     }
+    break;
+  default:
+    break;
   }
 }
 
