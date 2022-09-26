@@ -5,42 +5,26 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-// eslint-disable-next-line no-var
-var savedSnakeLocationX = [];
-// eslint-disable-next-line no-var
-var savedSnakeLocationY = [];
-
-// eslint-disable-next-line no-var
-var goX = 1;
-// eslint-disable-next-line no-var
-var goY = 0;
-// eslint-disable-next-line no-var
-var fixTurn;
-// eslint-disable-next-line no-var
-var lastDirectionX = 1;
-// eslint-disable-next-line no-var
-var lastDirectionY = 0;
-
+let savedSnakeLocationX = [];
+let savedSnakeLocationY = [];
+let goX = 1;
+let goY = 0;
+let fixTurn;
+let lastDirectionX = 1;
+let lastDirectionY = 0;
 let headPosition = [7, 0];
-
 let hasMoved = true;
-
 let fruitX;
-
 let fruitY;
-
 let thereIsFruit = false;
-
 let gridCoordinatesX = [];
-
 let gridCoordinatesY = [];
-
-let totalSquaresWidth = 20;//prompt("Please input width: ");
-let totalSquaresHeight = 20;//prompt("Please input height: ");
+let totalSquaresWidth = 40;//prompt("Please input width: ");
+let totalSquaresHeight = 40;//prompt("Please input height: ");
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  frameRate(2);
+  frameRate(5);
   savedSnakeLocationX = [0,1,2,3,4,5,6];
   savedSnakeLocationY = [0,0,0,0,0,0,0];
   fixTurn = savedSnakeLocationX.length;
@@ -49,7 +33,6 @@ function setup() {
 function draw() {
   background(220);
   makeGrid();
-  console.log(thereIsFruit);
 }
 
 function makeGrid() {
@@ -66,8 +49,8 @@ function makeGrid() {
       stroke(160);
       fill(255);
       rect(x, y, gridWidth, gridHeight);
-      append(gridCoordinatesX, x);
-      append(gridCoordinatesY, y);
+      gridCoordinatesX.push(x);
+      gridCoordinatesY.push(y);
     }
   }
   //makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
@@ -110,14 +93,10 @@ function drawFruit(gridWidth, gridHeight) {
 }
 
 function normalMove(gridWidth, gridHeight) {
-  append(savedSnakeLocationX, headPosition[0]);
-  reverse(savedSnakeLocationX);
-  shorten(savedSnakeLocationX);
-  reverse(savedSnakeLocationX);
-  append(savedSnakeLocationY, headPosition[1]);
-  reverse(savedSnakeLocationY);
-  shorten(savedSnakeLocationY, 0, 1);
-  reverse(savedSnakeLocationY);
+  savedSnakeLocationX.push(headPosition[0]);
+  savedSnakeLocationX.shift();
+  savedSnakeLocationY.push(headPosition[1]);
+  savedSnakeLocationY.shift();
   if(goX === 1) {
     headPosition[0] = headPosition[0] + 1;
     hasMoved = true;
