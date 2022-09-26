@@ -99,30 +99,17 @@ function addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) 
     fruitY = round(random(totalSquaresHeight));
     thereIsFruit = true;
   }
-  snakeEatFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
+  drawFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
 }
 
-function snakeEatFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
-  if(headPosition[0] === fruitX && headPosition[1] === fruitY) {
-    thereIsFruit = false;
-    console.log(thereIsFruit);
-    reverse(savedSnakeLocationX);
-    append(savedSnakeLocationX, savedSnakeLocationX[savedSnakeLocationX.length] - gridWidth);
-    reverse(savedSnakeLocationX);
-    reverse(savedSnakeLocationY);
-    append(savedSnakeLocationY, savedSnakeLocationY[savedSnakeLocationY.length] - gridHeight);
-    reverse(savedSnakeLocationY);
-  }
-  drawFruit(gridWidth, gridHeight);
-}
 
 function drawFruit(gridWidth, gridHeight) {
   fill("red");
   rect(fruitX * gridWidth, fruitY * gridHeight, gridWidth, gridHeight);
-  normalMove();
+  normalMove(gridWidth, gridHeight);
 }
 
-function normalMove() {
+function normalMove(gridWidth, gridHeight) {
   append(savedSnakeLocationX, headPosition[0]);
   reverse(savedSnakeLocationX);
   shorten(savedSnakeLocationX);
@@ -146,6 +133,20 @@ function normalMove() {
   else if(goY === -1) {
     headPosition[1] = headPosition[1] + 1;
     hasMoved = true;
+  }
+  snakeEatFruit(gridWidth, gridHeight);
+}
+
+function snakeEatFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
+  if(headPosition[0] === fruitX && headPosition[1] === fruitY) {
+    thereIsFruit = false;
+    console.log(thereIsFruit);
+    reverse(savedSnakeLocationX);
+    append(savedSnakeLocationX, savedSnakeLocationX[savedSnakeLocationX.length] - gridWidth);
+    reverse(savedSnakeLocationX);
+    reverse(savedSnakeLocationY);
+    append(savedSnakeLocationY, savedSnakeLocationY[savedSnakeLocationY.length] - gridHeight);
+    reverse(savedSnakeLocationY);
   }
 }
 
