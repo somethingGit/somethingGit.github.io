@@ -35,6 +35,9 @@ let gridCoordinatesX = [];
 
 let gridCoordinatesY = [];
 
+let totalSquaresWidth = 20;//prompt("Please input width: ");
+let totalSquaresHeight = 20;//prompt("Please input height: ");
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(2);
@@ -46,16 +49,17 @@ function setup() {
 function draw() {
   background(220);
   makeGrid();
+  console.log(thereIsFruit);
 }
 
 function makeGrid() {
-  let totalSquaresWidth = 20;//prompt("Please input width: ");
-  let totalSquaresHeight = 20;//prompt("Please input height: ");
   let gridWidth = windowWidth / totalSquaresWidth;
   let gridHeight = windowHeight / totalSquaresHeight;
   let snakeLength = savedSnakeLocationX.length + 1;
   gridWidth = windowWidth / totalSquaresWidth;
   gridHeight = windowHeight / totalSquaresHeight;
+  gridCoordinatesX = [];
+  gridCoordinatesY = [];
   for(let x = 0; x < width; x += gridWidth) {
     for(let y = 0; y < height; y += gridHeight) {
       strokeWeight(1);
@@ -71,8 +75,8 @@ function makeGrid() {
 }
 
 function snakeOutOfBounds(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
-  for(let i = 0; i < savedSnakeLocationX.length + 1; i++) {
-    if((savedSnakeLocationX * gridWidth > windowWidth || savedSnakeLocationX * gridWidth < 0 || savedSnakeLocationY * gridHeight > windowHeight || savedSnakeLocationY * gridHeight < 0) || headPosition[0] === savedSnakeLocationX[i] && headPosition[1] === savedSnakeLocationY[i]) {
+  for(let i = -1; i < savedSnakeLocationX.length + 1; i++) {
+    if(headPosition[0] > gridCoordinatesX.length || headPosition[0] < 0 || headPosition[1]  > gridCoordinatesY.length - 2 || headPosition[1] < 0 || headPosition[0] === savedSnakeLocationX[i] && headPosition[1] === savedSnakeLocationY[i]) {
       backToBeginning();
     }
   }
@@ -91,31 +95,30 @@ function makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight)
 
 function addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
   if(thereIsFruit === false) {
-    fruitX = random(gridCoordinatesX);
-    fruitY = random(gridCoordinatesY);
+    fruitX = round(random(totalSquaresWidth));
+    fruitY = round(random(totalSquaresHeight));
     thereIsFruit = true;
   }
-  console.log(fruitX);
-  console.log(fruitY);
-  snakeEatFruit(gridWidth, gridHeight);
+  snakeEatFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
 }
 
-function snakeEatFruit(gridWidth, gridHeight) {
+function snakeEatFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
   if(headPosition[0] === fruitX && headPosition[1] === fruitY) {
     thereIsFruit = false;
-    console.log("They touched eachother");
+    console.log(thereIsFruit);
+    reverse(savedSnakeLocationX);
+    append(savedSnakeLocationX, savedSnakeLocationX[savedSnakeLocationX.length] - gridWidth);
+    reverse(savedSnakeLocationX);
+    reverse(savedSnakeLocationY);
+    append(savedSnakeLocationY, savedSnakeLocationY[savedSnakeLocationY.length] - gridHeight);
+    reverse(savedSnakeLocationY);
   }
   drawFruit(gridWidth, gridHeight);
 }
 
 function drawFruit(gridWidth, gridHeight) {
-  if(thereIsFruit === true) {
-    fill("red");
-  }
-  else if(thereIsFruit === false) {
-    fill("white");
-  }
-  rect(fruitX, fruitY, gridWidth, gridHeight);
+  fill("red");
+  rect(fruitX * gridWidth, fruitY * gridHeight, gridWidth, gridHeight);
   normalMove();
 }
 
@@ -146,11 +149,17 @@ function normalMove() {
   }
 }
 
-
 function backToBeginning() {
   savedSnakeLocationX = [0,1,2,3,4,5,6];
   savedSnakeLocationY = [0,0,0,0,0,0,0];
   headPosition = [7, 0];
+  goX = 1;
+  goY = 0;
+  thereIsFruit = false;
+}
+
+function between(x, min, max) {
+  return x >= min && x <= max;
 }
 
 function keyPressed() {
@@ -186,6 +195,9 @@ function keyPressed() {
       fixTurn = 0;
       hasMoved = false;
     }
+    break;
+  case 32:
+    frameRate(1/20);
     break;
   default:
     break;
