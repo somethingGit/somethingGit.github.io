@@ -17,6 +17,7 @@ let gridCoordinatesX = [], gridCoordinatesY = [];
 let totalSquaresWidth = 40, totalSquaresHeight = 40;
 let snakeLength = 0;
 let score = 0;
+let ai = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -39,8 +40,8 @@ function makeGrid() {
   gridHeight = windowHeight / totalSquaresHeight;
   gridCoordinatesX = [];
   gridCoordinatesY = [];
-  for(let x = 0; x < width; x += gridWidth) {
-    for(let y = 0; y < height; y += gridHeight) {
+  for(let x = 0; x < width - gridWidth * 2; x += gridWidth) {
+    for(let y = 0; y < height - gridHeight * 2; y += gridHeight) {
       strokeWeight(1);
       stroke(160);
       fill(255);
@@ -78,7 +79,7 @@ function drawFruit(gridWidth, gridHeight) {
   }
   rect(fruitX * gridWidth, fruitY * gridHeight, gridWidth, gridHeight);
   normalMove(gridWidth, gridHeight);
-  console.log(fruitX, width, fruitY, height);
+  console.log(fruitX * gridWidth, width, fruitY * gridHeight, height);
 }
 
 function normalMove(gridWidth, gridHeight) {
@@ -145,8 +146,14 @@ function backToBeginning() {
 }
 
 function randomFruitLocation() {
-  fruitX = round(random(totalSquaresWidth)) - 1;
-  fruitY = round(random(totalSquaresHeight)) - 1;
+  fruitX = round(random(totalSquaresWidth)) - 3;
+  fruitY = round(random(totalSquaresHeight)) - 3;
+  if(fruitX < 0) {
+    fruitX *= -1;
+  }
+  if(fruitY < 0) {
+    fruitY *= -1;
+  }
   score++;
   for(let i = 0; i < snakeLength; i++) {
     if(fruitX === headPosition[i]) {
@@ -158,24 +165,24 @@ function randomFruitLocation() {
 
 function keyPressed() {
   switch(keyCode) {
-    case RIGHT_ARROW:
-      if(goX !== -1 && hasMoved) {
-        goX = 1;
-        goY = 0;
-        fixTurn = 0;
-        hasMoved = false;
-      }
-      break;
-      case LEFT_ARROW:
-        if(goX !== 1 && hasMoved) {
-          goX = -1;
-          goY = 0;
-          fixTurn = 0;
-          hasMoved = false;
-        }
-        break;
-        case UP_ARROW:
-          if(goY !== -1 && hasMoved) {
+  case RIGHT_ARROW:
+    if(goX !== -1 && hasMoved) {
+      goX = 1;
+      goY = 0;
+      fixTurn = 0;
+      hasMoved = false;
+    }
+    break;
+  case LEFT_ARROW:
+    if(goX !== 1 && hasMoved) {
+      goX = -1;
+      goY = 0;
+      fixTurn = 0;
+      hasMoved = false;
+    }
+    break;
+  case UP_ARROW:
+    if(goY !== -1 && hasMoved) {
       goX = 0;
       goY = 1;
       fixTurn = 0;
