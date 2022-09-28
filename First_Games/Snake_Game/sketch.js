@@ -18,6 +18,7 @@ let totalSquaresWidth = 40, totalSquaresHeight = 40;
 let snakeLength = 0;
 let score = 0;
 let ai = false;
+let pause = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,7 +30,9 @@ function setup() {
 
 function draw() {
   background(220);
-  makeGrid();
+  if(pause === false) {
+    makeGrid();
+  }
 }
 
 function makeGrid() {
@@ -199,6 +202,9 @@ function keyPressed() {
     break;
   case 32:
     frameRate(1/20);
+    break;
+  case 192:
+    pause = true;
     break;
   default:
     break;
