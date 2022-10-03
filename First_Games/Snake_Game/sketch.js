@@ -17,9 +17,9 @@ let totalSquaresWidth = 6, totalSquaresHeight = 6;
 let snakeLength = 0;
 let score = 0;
 let ai = true;
-let pause = false;
+let gamePause = false;
 let sideBarX, sideBarY;
-let fr = 10;
+let fr = 5;
 let aiGoAround = false;
 let oddOrEven;
 
@@ -41,6 +41,12 @@ function setup() {
 
 function draw() {
   background(220);
+  
+}
+
+function drawSidebar() {
+  fill("white");
+  rect(width - sideBarX, 0, sideBarX, height);
   makeGrid();
 }
 
@@ -59,12 +65,20 @@ function makeGrid() {
       rect(x, y, gridWidth, gridHeight);
     }
   }
+  addScore(gridWidth, gridHeight);
+}
+
+function addScore(gridWidth, gridHeight) {
+  let textPx = 32;
+  fill("black");
+  textSize(textPx);
+  text(score - 1, headPosition[0] * gridWidth + textPx / 2, headPosition[1] * gridHeight + textPx / 2);
   isGameDone(gridWidth, gridHeight);
 }
 
 function isGameDone(gridWidth, gridHeight) {
-  if(snakeLength === totalSquaresHeight * totalSquaresWidth) {
-    pause = true;
+  if(snakeLength - 1 === totalSquaresHeight * totalSquaresWidth) {
+    gamePause = true;
   }
   makeSnake(gridWidth, gridHeight);
 }
@@ -76,10 +90,10 @@ function makeSnake(gridWidth, gridHeight) {
     fill("orange");
     rect(savedSnakeLocationX[i] * gridWidth, savedSnakeLocationY[i] * gridHeight, gridWidth, gridHeight);
   }
-  if(pause === false) {
+  if(gamePause === false) {
     addFruit(gridWidth, gridHeight);
   }
-  else if(pause === true) {
+  else if(gamePause === true) {
     addFruit(gridWidth, gridHeight);
   }
 }
@@ -142,38 +156,42 @@ function aiMove(gridWidth, gridHeight) {
     }
   }
   else if(!oddOrEven) {
-    if(headPosition[1] === totalSquaresHeight - 1 && headPosition[0] === 1) {
+    if(headPosition[1] === totalSquaresHeight - 1 && totalSquaresWidth - 1 === headPosition[0]) {
       aiGoAround = true;
     }
     if(aiGoAround === false) {
-      if(totalSquaresWidth - 1 === headPosition[0] && goX === 1 && goY === 0) {
+      if(totalSquaresWidth - 2 === headPosition[0] && goX === 1 && goY === 0) {
         goX = 0;
         goY = -1;
       }
-      else if(goX === 0 && goY === -1 && headPosition[0] === totalSquaresWidth - 1) {
+      else if(goX === 0 && goY === -1 && headPosition[0] === totalSquaresWidth - 2) {
         goX = -1;
         goY = 0;
       }
-      else if(headPosition[0] === 1 && goX === -1) {
+      else if(headPosition[0] === 0 && goX === -1) {
         goX = 0;
         goY = -1;
       }
-      else if(goX === 0 && goY === -1 && headPosition[0] === 1) {
+      else if(goX === 0 && goY === -1 && headPosition[0] === 0) {
         goX = 1; 
         goY = 0;
       }
-    }
-    else if(aiGoAround === true && headPosition[0] === 0) {
-      if(headPosition[0] === 0 && headPosition[1] === 0) {
+    }/*
+    else if(aiGoAround === true && headPosition[0] === totalSquaresWidth - 1) {
+      if(headPosition[0] > 0 && headPosition[1] === 0 && headPosition[0] !== 0) {
         goX = 1;
         goY = 0;
         aiGoAround = false;
       }
-      else {
+      else if(aiGoAround === true && headPosition[0] === totalSquaresWidth - 1 && headPosition[1] === totalSquaresHeight - 1){
         goX = 0;
         goY = 1;
       }
-    }
+      else {
+        goX = 1;
+        goY = 0;
+      }
+    }*/
   }
   normalMove(gridWidth, gridHeight);
 }
@@ -199,14 +217,6 @@ function normalMove(gridWidth, gridHeight) {
     headPosition[1] = headPosition[1] + 1;
     hasMoved = true;
   }
-  addScore(gridWidth, gridHeight);
-}
-
-function addScore(gridWidth, gridHeight) {
-  let textPx = 32;
-  fill("black");
-  textSize(textPx);
-  text(score - 1, headPosition[0] * gridWidth + textPx / 2, headPosition[1] * gridHeight + textPx / 2);
   snakeEatFruit(gridWidth, gridHeight);
 }
 
@@ -234,12 +244,6 @@ function snakeOutOfBounds(gridWidth, gridHeight) {
       backToBeginning();
     }
   }
-}
-
-
-function drawSidebar() {
-  fill("white");
-  rect(width - sideBarX, 0, sideBarX, height);
 }
 
 function backToBeginning() {
@@ -311,13 +315,13 @@ function keyPressed() {
       frameRate(1/20);
       break;
     case 192:
-      if(pause === true) {
-        pause = false;
+      if(gamePause === true) {
+        gamePause = false;
       }
-      else if(pause === false) {
-        pause = true;
+      else if(gamePause === false) {
+        gamePause = true;
       }
-      console.log(pause);
+      console.log(gamePause);
       break;
     default:
       break;
