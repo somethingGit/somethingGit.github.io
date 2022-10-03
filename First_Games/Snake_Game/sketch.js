@@ -13,46 +13,50 @@ let headPosition = [2, 0];
 let hasMoved = true;
 let fruitX, fruitY;
 let thereIsFruit = false;
-let gridCoordinatesX = [], gridCoordinatesY = [];
-let totalSquaresWidth = 40, totalSquaresHeight = 40;
+let totalSquaresWidth = 6, totalSquaresHeight = 6;
 let snakeLength = 0;
 let score = 0;
-let ai = false;
+let ai = true;
 let pause = false;
 let sideBarX, sideBarY;
+let fr = 10;
+let aiGoAround = false;
+let oddOrEven;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  frameRate(10);
+  frameRate(fr);
   savedSnakeLocationX = [0,1];
   savedSnakeLocationY = [0,0];
   fixTurn = savedSnakeLocationX.length;
   sideBarX = windowWidth / 5;
-  sideBarY = windowHeight;
+  sideBarY = 0;
+  if(totalSquaresHeight % 2 === 0) {
+    oddOrEven = true;
+  }
+  else if(totalSquaresHeight % 2 === 1) {
+    oddOrEven = false;
+  }
 }
 
 function draw() {
   background(220);
   makeGrid();
-  console.log(pause);
 }
 
 function makeGrid() {
+  sideBarX = windowWidth / 5;
   let gridWidth = windowWidth / totalSquaresWidth;
   let gridHeight = windowHeight / totalSquaresHeight;
   snakeLength = savedSnakeLocationX.length + 1;
   gridWidth = (windowWidth - sideBarX) / totalSquaresWidth;
   gridHeight = windowHeight / totalSquaresHeight;
-  gridCoordinatesX = [];
-  gridCoordinatesY = [];
   for(let x = 0; x < width - sideBarX; x += gridWidth) {
     for(let y = 0; y <= height; y += gridHeight) {
       strokeWeight(1);
       stroke(160);
       fill(255);
       rect(x, y, gridWidth, gridHeight);
-      gridCoordinatesX.push(x);
-      gridCoordinatesY.push(y);
     }
   }
   makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
@@ -60,13 +64,16 @@ function makeGrid() {
 
 
 function makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
-  fill("orange");
+  fill("black");
   rect(headPosition[0] * gridWidth, headPosition[1] * gridHeight, gridWidth, gridHeight);
   for(let i = 0; i < savedSnakeLocationX.length; i++) {
     fill("orange");
     rect(savedSnakeLocationX[i] * gridWidth, savedSnakeLocationY[i] * gridHeight, gridWidth, gridHeight);
   }
   if(pause === false) {
+    addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
+  }
+  else if(pause === true) {
     addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
   }
 }
@@ -80,13 +87,89 @@ function addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) 
 
 
 function drawFruit(gridWidth, gridHeight) {
-  fill("orange");
+  fill("red");
   if(fruitX * gridWidth > width || fruitY * gridHeight > height) {
     addFruit();
   }
   rect(fruitX * gridWidth, fruitY * gridHeight, gridWidth, gridHeight);
+  if(ai === false) {
+    normalMove(gridWidth, gridHeight);
+  }
+  else if(ai === true) {
+    aiMove(gridWidth, gridHeight);
+  }
+}
+
+function aiMove(gridWidth, gridHeight) {
+  if(oddOrEven) {
+    if(headPosition[1] === totalSquaresHeight - 1 && headPosition[0] === 1) {
+      aiGoAround = true;
+    }
+    if(aiGoAround === false) {
+      if(totalSquaresWidth - 1 === headPosition[0] && goX === 1 && goY === 0) {
+        goX = 0;
+        goY = -1;
+      }
+      else if(goX === 0 && goY === -1 && headPosition[0] === totalSquaresWidth - 1) {
+        goX = -1;
+        goY = 0;
+      }
+      else if(headPosition[0] === 1 && goX === -1) {
+        goX = 0;
+        goY = -1;
+      }
+      else if(goX === 0 && goY === -1 && headPosition[0] === 1) {
+        goX = 1; 
+        goY = 0;
+      }
+    }
+    else if(aiGoAround === true && headPosition[0] === 0) {
+      if(headPosition[0] === 0 && headPosition[1] === 0) {
+        goX = 1;
+        goY = 0;
+        aiGoAround = false;
+      }
+      else {
+        goX = 0;
+        goY = 1;
+      }
+    }
+  }
+  else if(!oddOrEven) {
+    if(headPosition[1] === totalSquaresHeight - 1 && headPosition[0] === 1) {
+      aiGoAround = true;
+    }
+    if(aiGoAround === false) {
+      if(totalSquaresWidth - 1 === headPosition[0] && goX === 1 && goY === 0) {
+        goX = 0;
+        goY = -1;
+      }
+      else if(goX === 0 && goY === -1 && headPosition[0] === totalSquaresWidth - 1) {
+        goX = -1;
+        goY = 0;
+      }
+      else if(headPosition[0] === 1 && goX === -1) {
+        goX = 0;
+        goY = -1;
+      }
+      else if(goX === 0 && goY === -1 && headPosition[0] === 1) {
+        goX = 1; 
+        goY = 0;
+      }
+    }
+    else if(aiGoAround === true && headPosition[0] === 0) {
+      if(headPosition[0] === 0 && headPosition[1] === 0) {
+        goX = 1;
+        goY = 0;
+        aiGoAround = false;
+      }
+      else {
+        goX = 0;
+        goY = 1;
+      }
+    }
+  }
   normalMove(gridWidth, gridHeight);
-  console.log(fruitX * gridWidth, width, fruitY * gridHeight, height);
 }
 
 function normalMove(gridWidth, gridHeight) {
@@ -132,26 +215,37 @@ function snakeEatFruit(gridWidth, gridHeight) {
     reverse(savedSnakeLocationY);
     storeItem("snakeScore", score - 1);
   }
+  console.log("I am called", headPosition[0], headPosition[1], aiGoAround);
   snakeOutOfBounds(gridWidth, gridHeight);
 }
 
 function snakeOutOfBounds(gridWidth, gridHeight) {
+  if(headPosition[0] * gridWidth >= width - sideBarX || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight || headPosition[1] < 0) {
+    backToBeginning();
+  }
   for(let i = -1; i < savedSnakeLocationX.length + 1; i++) {
-    if(headPosition[0] * gridWidth > width || headPosition[0] < 0 || headPosition[1] * gridHeight > height || headPosition[1] < 0 || headPosition[0] === savedSnakeLocationX[i] && headPosition[1] === savedSnakeLocationY[i]) {
+    if(headPosition[0] === savedSnakeLocationX[i] && headPosition[1] === savedSnakeLocationY[i]) {
       backToBeginning();
     }
   }
-  console.log("Position of the head", headPosition[0] * gridWidth, width);
+  drawSidebar();
+}
+
+function drawSidebar() {
+  fill("white");
+  rect(width - sideBarX, 0, sideBarX, height);
 }
 
 function backToBeginning() {
+  console.log(headPosition)
   savedSnakeLocationX = [0,1];
   savedSnakeLocationY = [0,0];
   headPosition = [2, 0];
-  goX = 1;
+  goX = -1;
   goY = 0;
   score = 0;
   thereIsFruit = false;
+  aiGoAround = false;
 }
 
 function randomFruitLocation() {
@@ -165,7 +259,7 @@ function randomFruitLocation() {
   }
   score++;
   for(let i = 0; i < snakeLength; i++) {
-    if(fruitX === headPosition[i]) {
+    if(fruitX === savedSnakeLocationX[i] && fruitY === savedSnakeLocationY[i] || headPosition[0] === fruitX && headPosition[1] === fruitY) {
       randomFruitLocation();
     }
   }
@@ -173,57 +267,58 @@ function randomFruitLocation() {
 }
 
 function keyPressed() {
-  switch(keyCode) {
-  case RIGHT_ARROW:
-    if(goX !== -1 && hasMoved) {
-      goX = 1;
-      goY = 0;
-      fixTurn = 0;
-      hasMoved = false;
+  if(ai === false) {
+    switch(keyCode) {
+    case RIGHT_ARROW:
+      if(goX !== -1 && hasMoved) {
+        goX = 1;
+        goY = 0;
+        fixTurn = 0;
+        hasMoved = false;
+      }
+      break;
+    case LEFT_ARROW:
+      if(goX !== 1 && hasMoved) {
+        goX = -1;
+        goY = 0;
+        fixTurn = 0;
+        hasMoved = false;
+      }
+      break;
+    case UP_ARROW:
+      if(goY !== -1 && hasMoved) {
+        goX = 0;
+        goY = 1;
+        fixTurn = 0;
+        hasMoved = false;
+      }
+      break;
+    case DOWN_ARROW:
+      if(goY !== 1 && hasMoved) {
+        goX = 0;
+        goY = -1;
+        fixTurn = 0;
+        hasMoved = false;
+      }
+      break;
+    case 32:
+      frameRate(1/20);
+      break;
+    case 192:
+      if(pause = true) {
+        pause = false;
+      }
+      else if(pause = false) {
+        pause = true;
+      }
+      console.log(pause);
+      break;
+    default:
+      break;
     }
-    break;
-  case LEFT_ARROW:
-    if(goX !== 1 && hasMoved) {
-      goX = -1;
-      goY = 0;
-      fixTurn = 0;
-      hasMoved = false;
-    }
-    break;
-  case UP_ARROW:
-    if(goY !== -1 && hasMoved) {
-      goX = 0;
-      goY = 1;
-      fixTurn = 0;
-      hasMoved = false;
-    }
-    break;
-  case DOWN_ARROW:
-    if(goY !== 1 && hasMoved) {
-      goX = 0;
-      goY = -1;
-      fixTurn = 0;
-      hasMoved = false;
-    }
-    break;
-  case 32:
-    frameRate(1/20);
-    break;
-  case 192:
-    if(pause = true) {
-      pause = false;
-    }
-    else if(pause = false) {
-      pause = true;
-    }
-    break;
-  default:
-    break;
-  }
+}
 }
 
 function windowResized() {
-  let gridCoordinatesX = [];
-  let gridCoordinatesY = [];
   resizeCanvas(windowWidth, windowHeight);
 }
