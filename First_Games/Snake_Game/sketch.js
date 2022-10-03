@@ -59,11 +59,17 @@ function makeGrid() {
       rect(x, y, gridWidth, gridHeight);
     }
   }
-  makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
+  isGameDone(gridWidth, gridHeight);
 }
 
+function isGameDone(gridWidth, gridHeight) {
+  if(snakeLength === totalSquaresHeight * totalSquaresWidth) {
+    pause = true;
+  }
+  makeSnake(gridWidth, gridHeight);
+}
 
-function makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
+function makeSnake(gridWidth, gridHeight) {
   fill("black");
   rect(headPosition[0] * gridWidth, headPosition[1] * gridHeight, gridWidth, gridHeight);
   for(let i = 0; i < savedSnakeLocationX.length; i++) {
@@ -71,14 +77,14 @@ function makeSnake(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight)
     rect(savedSnakeLocationX[i] * gridWidth, savedSnakeLocationY[i] * gridHeight, gridWidth, gridHeight);
   }
   if(pause === false) {
-    addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
+    addFruit(gridWidth, gridHeight);
   }
   else if(pause === true) {
-    addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight);
+    addFruit(gridWidth, gridHeight);
   }
 }
 
-function addFruit(gridWidth, gridHeight, totalSquaresWidth, totalSquaresHeight) {
+function addFruit(gridWidth, gridHeight) {
   if(thereIsFruit === false) {
     randomFruitLocation();
   }
@@ -228,8 +234,8 @@ function snakeOutOfBounds(gridWidth, gridHeight) {
       backToBeginning();
     }
   }
-  drawSidebar();
 }
+
 
 function drawSidebar() {
   fill("white");
@@ -237,7 +243,7 @@ function drawSidebar() {
 }
 
 function backToBeginning() {
-  console.log(headPosition)
+  console.log(headPosition);
   savedSnakeLocationX = [0,1];
   savedSnakeLocationY = [0,0];
   headPosition = [2, 0];
@@ -249,8 +255,8 @@ function backToBeginning() {
 }
 
 function randomFruitLocation() {
-  fruitX = round(random(totalSquaresWidth)) - 3;
-  fruitY = round(random(totalSquaresHeight)) - 3;
+  fruitX = floor(random(totalSquaresWidth));
+  fruitY = floor(random(totalSquaresHeight));
   if(fruitX < 0) {
     fruitX *= -1;
   }
@@ -305,10 +311,10 @@ function keyPressed() {
       frameRate(1/20);
       break;
     case 192:
-      if(pause = true) {
+      if(pause === true) {
         pause = false;
       }
-      else if(pause = false) {
+      else if(pause === false) {
         pause = true;
       }
       console.log(pause);
@@ -316,7 +322,7 @@ function keyPressed() {
     default:
       break;
     }
-}
+  }
 }
 
 function windowResized() {
