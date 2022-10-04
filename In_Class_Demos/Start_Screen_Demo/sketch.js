@@ -49,9 +49,7 @@ function mousePressed() {
   }
 }
 
-function buttonIsClicked(left, right, top, bottom) {
-  return mouseX <= right && mouseX >= left && mouseY <= bottom && mouseY >= top;
-}
+buttonIsClicked = (left, right, top, bottom) =>mouseX <= right && mouseX >= left && mouseY <= bottom && mouseY >= top;
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);

@@ -1,9 +1,9 @@
-// Project Title
-// Your Name
-// Date
+// Snake
+// Jason
+// October 03, 2022
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I added sound to this project.
 
 let savedSnakeLocationX = [], savedSnakeLocationY = [];
 let goX = 1, goY = 0;
@@ -23,7 +23,7 @@ let fr = 5;
 let aiGoAround = false;
 let oddOrEven;
 
-function setup() {
+setup = () => {
   createCanvas(windowWidth, windowHeight);
   frameRate(fr);
   savedSnakeLocationX = [0,1];
@@ -39,12 +39,26 @@ function setup() {
   }
 }
 
-function draw() {
+draw = () => {
   background(220);
-  
+  isGameDone();
 }
 
-function drawSidebar() {
+isGameDone = () => {
+  if(snakeLength - 1 === totalSquaresHeight * totalSquaresWidth) {
+    gamePause = true;
+    gameWin();
+  }
+  else {
+    drawSidebar();
+  }
+}
+
+gameWin = () => {
+  text();
+}
+
+drawSidebar = () => {
   fill("white");
   rect(width - sideBarX, 0, sideBarX, height);
   makeGrid();
@@ -52,8 +66,8 @@ function drawSidebar() {
 
 function makeGrid() {
   sideBarX = windowWidth / 5;
-  let gridWidth = windowWidth / totalSquaresWidth;
-  let gridHeight = windowHeight / totalSquaresHeight;
+  let gridWidth = (width - sideBarX) / totalSquaresWidth;
+  let gridHeight = height / totalSquaresHeight;
   snakeLength = savedSnakeLocationX.length + 1;
   gridWidth = (windowWidth - sideBarX) / totalSquaresWidth;
   gridHeight = windowHeight / totalSquaresHeight;
@@ -73,13 +87,6 @@ function addScore(gridWidth, gridHeight) {
   fill("black");
   textSize(textPx);
   text(score - 1, headPosition[0] * gridWidth + textPx / 2, headPosition[1] * gridHeight + textPx / 2);
-  isGameDone(gridWidth, gridHeight);
-}
-
-function isGameDone(gridWidth, gridHeight) {
-  if(snakeLength - 1 === totalSquaresHeight * totalSquaresWidth) {
-    gamePause = true;
-  }
   makeSnake(gridWidth, gridHeight);
 }
 
@@ -230,6 +237,7 @@ function snakeEatFruit(gridWidth, gridHeight) {
     append(savedSnakeLocationY, savedSnakeLocationY[savedSnakeLocationY.length] - gridHeight);
     reverse(savedSnakeLocationY);
     storeItem("snakeScore", score - 1);
+    
   }
   console.log("I am called", headPosition[0], headPosition[1], aiGoAround);
   snakeOutOfBounds(gridWidth, gridHeight);
@@ -329,6 +337,4 @@ function keyPressed() {
   }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+windowResized = () => resizeCanvas(windowWidth, windowHeight);

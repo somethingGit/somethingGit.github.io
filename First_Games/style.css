@@ -1,3 +1,10 @@
-.snake {
-    height : 50px;
+.Headbox {
+    background-color: orange;
+    color : orange;
+    width : 100px;
+    height: 100px;
 }
+/*
+#snake {
+    height : 50px;
+}*/

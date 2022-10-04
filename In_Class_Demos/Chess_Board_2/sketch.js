@@ -38,6 +38,4 @@ function drawChessBoard() {
   }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+windowResized = () => resizeCanvas(windowWidth, windowHeight);

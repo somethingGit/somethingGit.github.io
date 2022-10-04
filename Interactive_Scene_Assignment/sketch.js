@@ -28,6 +28,6 @@ function mouseClicked() {
   
 }
 
-function mouseWheel(event) {
+mouseWheel = (event) => {
   scrollbutton += event.delta;
 }
