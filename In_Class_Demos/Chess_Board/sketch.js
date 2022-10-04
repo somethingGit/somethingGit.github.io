@@ -6,11 +6,10 @@
 // - describe what you did to take this project "above and beyond"
 let num = 0;
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-}
+let setup = () => createCanvas(windowWidth, windowHeight);
 
 function draw() {
+  resizeCanvas(windowWidth, windowHeight);
   let length = windowWidth / 8;
   let squareColor = 0;
   let currentY = 0;

@@ -13,17 +13,17 @@ let headPosition = [2, 0];
 let hasMoved = true;
 let fruitX, fruitY;
 let thereIsFruit = false;
-let totalSquaresWidth = 6, totalSquaresHeight = 6;
+let totalSquaresWidth = 50, totalSquaresHeight = 50;
 let snakeLength = 0;
 let score = 0;
-let ai = true;
+let ai = false;
 let gamePause = false;
 let sideBarX, sideBarY;
-let fr = 5;
+let fr = 3;
 let aiGoAround = false;
 let oddOrEven;
 
-setup = () => {
+function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(fr);
   savedSnakeLocationX = [0,1];
@@ -39,32 +39,33 @@ setup = () => {
   }
 }
 
-draw = () => {
+function draw() {
   background(220);
   isGameDone();
 }
 
-isGameDone = () => {
+let isGameDone = () => {
   if(snakeLength - 1 === totalSquaresHeight * totalSquaresWidth) {
     gamePause = true;
-    gameWin();
+    drawSidebar();
   }
   else {
     drawSidebar();
   }
-}
+  drawSidebar();
+};
 
-gameWin = () => {
+let gameWin = () => {
   text();
-}
+};
 
-drawSidebar = () => {
+let drawSidebar = () => {
   fill("white");
   rect(width - sideBarX, 0, sideBarX, height);
   makeGrid();
-}
+};
 
-function makeGrid() {
+let makeGrid = () => {
   sideBarX = windowWidth / 5;
   let gridWidth = (width - sideBarX) / totalSquaresWidth;
   let gridHeight = height / totalSquaresHeight;
@@ -80,17 +81,17 @@ function makeGrid() {
     }
   }
   addScore(gridWidth, gridHeight);
-}
+};
 
-function addScore(gridWidth, gridHeight) {
+let addScore = (gridWidth, gridHeight) => {
   let textPx = 32;
   fill("black");
   textSize(textPx);
-  text(score - 1, headPosition[0] * gridWidth + textPx / 2, headPosition[1] * gridHeight + textPx / 2);
+  text(score - 1, width - sideBarX / 2 + textPx / 2);
   makeSnake(gridWidth, gridHeight);
-}
+};
 
-function makeSnake(gridWidth, gridHeight) {
+let makeSnake = (gridWidth, gridHeight) => {
   fill("black");
   rect(headPosition[0] * gridWidth, headPosition[1] * gridHeight, gridWidth, gridHeight);
   for(let i = 0; i < savedSnakeLocationX.length; i++) {
@@ -103,7 +104,7 @@ function makeSnake(gridWidth, gridHeight) {
   else if(gamePause === true) {
     addFruit(gridWidth, gridHeight);
   }
-}
+};
 
 function addFruit(gridWidth, gridHeight) {
   if(thereIsFruit === false) {
@@ -113,7 +114,7 @@ function addFruit(gridWidth, gridHeight) {
 }
 
 
-function drawFruit(gridWidth, gridHeight) {
+let drawFruit = (gridWidth, gridHeight) => {
   fill("red");
   if(fruitX * gridWidth > width || fruitY * gridHeight > height) {
     addFruit();
@@ -125,7 +126,7 @@ function drawFruit(gridWidth, gridHeight) {
   else if(ai === true) {
     aiMove(gridWidth, gridHeight);
   }
-}
+};
 
 function aiMove(gridWidth, gridHeight) {
   if(oddOrEven) {
@@ -244,7 +245,7 @@ function snakeEatFruit(gridWidth, gridHeight) {
 }
 
 function snakeOutOfBounds(gridWidth, gridHeight) {
-  if(headPosition[0] * gridWidth >= width - sideBarX || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight || headPosition[1] < 0) {
+  if(headPosition[0] > totalSquaresWidth || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight || headPosition[1] < 0) {
     backToBeginning();
   }
   for(let i = -1; i < savedSnakeLocationX.length + 1; i++) {
@@ -337,4 +338,4 @@ function keyPressed() {
   }
 }
 
-windowResized = () => resizeCanvas(windowWidth, windowHeight);
+let windowResized = () => resizeCanvas(windowWidth, windowHeight);

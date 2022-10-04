@@ -1,10 +1,8 @@
-.Headbox {
-    background-color: orange;
-    color : orange;
-    width : 100px;
-    height: 100px;
+html, body {
+  margin: 0;
+  padding: 0;
 }
-/*
-#snake {
-    height : 50px;
-}*/
+
+canvas {
+  display: block;
+}
