@@ -15,4 +15,10 @@ function draw() {
   
 }
 
+function mouseClicked() {
+  if(mouseIsPressed) {
+    location.replace("somethingGit.github.io/First_Games/Snake_Game/index.html");
+  }
+}
+
 let windowResized = () => resizeCanvas(windowWidth, windowHeight);
