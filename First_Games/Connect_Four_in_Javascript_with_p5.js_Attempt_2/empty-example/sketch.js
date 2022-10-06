@@ -9,7 +9,7 @@ let grid = [
 
 let gridLength = grid.length;
 
-let a = 5, b = 5, c = 5, d = 5, e = 5, f = 5;
+let a, b, c, d, e, f, fr;
 let w, x, y, diameter, dif, column1, column2, column3, column4, column5, column6, row1, row2, row3, row4, row5, row6;
 let player;
 
@@ -27,10 +27,8 @@ function playerColor() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // put setup code here
-  /*
+  a = 5, b = 5, c = 5, d = 5, e = 5, f = 5;
   frameRate(fr);
-  */
 }
 
 function draw() {
@@ -116,12 +114,6 @@ function makeMouseHover() {
   }
 }
 
-
-
-
-
-
-
 function mouseClicked() {
   connectFourPlay();
 }
@@ -140,7 +132,7 @@ function connectFourPlay() {
 }
 
 function placeToken() {
-  if(mouseX <= column1 + diameter && mouseX >= column1 - dif) {
+  if(mouseX <= column1 + dif / 2) {
     let gridCoordinates = 0;
     if(gridCoordinates + a < gridLength) {
       grid[gridCoordinates + a * 6] = player;
@@ -149,7 +141,7 @@ function placeToken() {
       //tokenDrop(column1);
     }
   }
-  else if(mouseX <= column2 + diameter + dif / 4 && mouseX >= column2 - dif / 2) {
+  else if(mouseX <= column2 + dif / 2) {
     let gridCoordinates = 1;
     if(gridCoordinates + b < gridLength) {
       grid[gridCoordinates + b * 6] = player;
@@ -157,7 +149,7 @@ function placeToken() {
       //tokenDrop(column2);
     }
   }
-  else if(mouseX <= column3 + diameter + dif / 4 && mouseX >= column3 - dif / 2) {
+  else if(mouseX <= column3 + dif / 2) {
     let gridCoordinates = 2;
     if(gridCoordinates + c < gridLength) {
       grid[gridCoordinates + c * 6] = player;
@@ -165,7 +157,7 @@ function placeToken() {
       //tokenDrop(column3);
     }
   }
-  else if(mouseX <= column4 + diameter + dif / 4 && mouseX >= column4 - dif / 2) {
+  else if(mouseX <= column4 + dif / 2) {
     let gridCoordinates = 3;
     if(gridCoordinates + d < gridLength) {
       grid[gridCoordinates + d * 6] = player;
@@ -173,7 +165,7 @@ function placeToken() {
       //tokenDrop(column4);
     }
   }
-  if(mouseX <= column5 + diameter + dif / 4 && mouseX >= column5 - dif / 2) {
+  else if(mouseX <= column5 + dif / 2) {
     let gridCoordinates = 4;
     if(gridCoordinates + e < gridLength) {
       grid[gridCoordinates + e * 6] = player;
@@ -182,7 +174,7 @@ function placeToken() {
       //tokenDrop(column5);
     }
   }
-  else if(mouseX <= column6 + diameter + dif / 4 && mouseX >= column6 - dif / 2) {
+  else if(mouseX <= column6 + dif /2) {
     let gridCoordinates = 5;
     if(gridCoordinates + f < gridLength) {
       grid[gridCoordinates + f * 6] = player;
