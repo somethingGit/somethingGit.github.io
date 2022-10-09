@@ -19,18 +19,24 @@ let score = 0;
 let ai = false;
 let gamePause = false;
 let sideBarX, sideBarY;
-let fr = 3;
+let fr = 4;
 let aiGoAround = false;
 let oddOrEven;
+let lastTime;
+let totalFrame = 0;
+let go = false;
+const waitTime = 100000;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(fr);
-  savedSnakeLocationX = [0,1];
-  savedSnakeLocationY = [0,0];
+  savedSnakeLocationX = [totalSquaresWidth / 2 - 1, totalSquaresWidth / 2 - 2];
+  savedSnakeLocationY = [totalSquaresHeight / 2, totalSquaresHeight / 2];
   fixTurn = savedSnakeLocationX.length;
   sideBarX = windowWidth / 5;
   sideBarY = 0;
+  lastTime = 0;
+  
   if(totalSquaresHeight % 2 === 0) {
     oddOrEven = true;
   }
@@ -40,8 +46,10 @@ function setup() {
 }
 
 function draw() {
-  background(220);
-  isGameDone();
+  background("white");
+  if(go === true) {
+    isGameDone();
+  }
 }
 
 let isGameDone = () => {
@@ -56,7 +64,7 @@ let isGameDone = () => {
 };
 
 let gameWin = () => {
-  text();
+  text("You Win!", width / sideBarX / 2, height / 2);
 };
 
 let drawSidebar = () => {
@@ -72,12 +80,12 @@ let makeGrid = () => {
   snakeLength = savedSnakeLocationX.length + 1;
   gridWidth = (windowWidth - sideBarX) / totalSquaresWidth;
   gridHeight = windowHeight / totalSquaresHeight;
-  for(let x = 0; x < width - sideBarX; x += gridWidth) {
+  for(let x = gridWidth; x <= width - sideBarX; x += gridWidth) {
     for(let y = 0; y <= height; y += gridHeight) {
       strokeWeight(1);
       stroke(160);
       fill(255);
-      rect(x, y, gridWidth, gridHeight);
+      rect(x - gridWidth, y, gridWidth, gridHeight);
     }
   }
   addScore(gridWidth, gridHeight);
@@ -110,7 +118,9 @@ function addFruit(gridWidth, gridHeight) {
   if(thereIsFruit === false) {
     randomFruitLocation();
   }
-  drawFruit(gridWidth, gridHeight);
+  else {
+    drawFruit(gridWidth, gridHeight);
+  }
 }
 
 
@@ -120,7 +130,7 @@ let drawFruit = (gridWidth, gridHeight) => {
     addFruit();
   }
   rect(fruitX * gridWidth, fruitY * gridHeight, gridWidth, gridHeight);
-  if(ai === false) {
+  if(ai === false && totalFrame <= fr) {
     normalMove(gridWidth, gridHeight);
   }
   else if(ai === true) {
@@ -128,7 +138,7 @@ let drawFruit = (gridWidth, gridHeight) => {
   }
 };
 
-function aiMove(gridWidth, gridHeight) {
+let aiMove = (gridWidth, gridHeight) => {
   if(oddOrEven) {
     if(headPosition[1] === totalSquaresHeight - 1 && headPosition[0] === 1) {
       aiGoAround = true;
@@ -201,10 +211,16 @@ function aiMove(gridWidth, gridHeight) {
       }
     }*/
   }
-  normalMove(gridWidth, gridHeight);
-}
+  if(totalFrame >= fr) {
+    totalFrame = 0;
+    normalMove(gridWidth, gridHeight);
+  }
+  else {
+    totalFrame++;
+  }
+};
 
-function normalMove(gridWidth, gridHeight) {
+let normalMove = (gridWidth, gridHeight) => {
   savedSnakeLocationX.push(headPosition[0]);
   savedSnakeLocationX.shift();
   savedSnakeLocationY.push(headPosition[1]);
@@ -226,9 +242,9 @@ function normalMove(gridWidth, gridHeight) {
     hasMoved = true;
   }
   snakeEatFruit(gridWidth, gridHeight);
-}
+};
 
-function snakeEatFruit(gridWidth, gridHeight) {
+let snakeEatFruit = (gridWidth, gridHeight) => {
   if(headPosition[0] === fruitX && headPosition[1] === fruitY) {
     thereIsFruit = false;
     reverse(savedSnakeLocationX);
@@ -238,34 +254,36 @@ function snakeEatFruit(gridWidth, gridHeight) {
     append(savedSnakeLocationY, savedSnakeLocationY[savedSnakeLocationY.length] - gridHeight);
     reverse(savedSnakeLocationY);
     storeItem("snakeScore", score - 1);
+    score++;
     
   }
   console.log("I am called", headPosition[0], headPosition[1], aiGoAround);
-  snakeOutOfBounds(gridWidth, gridHeight);
-}
+  isSnakeOutOfBounds();
+};
 
-function snakeOutOfBounds(gridWidth, gridHeight) {
-  if(headPosition[0] > totalSquaresWidth || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight || headPosition[1] < 0) {
-    backToBeginning();
-  }
-  for(let i = -1; i < savedSnakeLocationX.length + 1; i++) {
+let isSnakeOutOfBounds = () => {
+  for(let i = 0; i < savedSnakeLocationX.length; i++) {
     if(headPosition[0] === savedSnakeLocationX[i] && headPosition[1] === savedSnakeLocationY[i]) {
       backToBeginning();
     }
   }
-}
+  if(headPosition[0] > totalSquaresWidth - 1 || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight - 1 || headPosition[1] < 0) {
+    backToBeginning();
+  }
+};
 
-function backToBeginning() {
+let backToBeginning = () => {
   console.log(headPosition);
-  savedSnakeLocationX = [0,1];
-  savedSnakeLocationY = [0,0];
-  headPosition = [2, 0];
-  goX = -1;
+  headPosition = [totalSquaresWidth / 2, totalSquaresHeight / 2];
+  savedSnakeLocationX = [totalSquaresWidth / 2 - 1, totalSquaresWidth / 2 - 2];
+  savedSnakeLocationY = [totalSquaresHeight / 2, totalSquaresHeight / 2];
+  goX = 1;
   goY = 0;
   score = 0;
   thereIsFruit = false;
   aiGoAround = false;
-}
+  go = false;
+};
 
 function randomFruitLocation() {
   fruitX = floor(random(totalSquaresWidth));
@@ -276,7 +294,6 @@ function randomFruitLocation() {
   if(fruitY < 0) {
     fruitY *= -1;
   }
-  score++;
   for(let i = 0; i < snakeLength; i++) {
     if(fruitX === savedSnakeLocationX[i] && fruitY === savedSnakeLocationY[i] || headPosition[0] === fruitX && headPosition[1] === fruitY) {
       randomFruitLocation();
@@ -336,6 +353,11 @@ function keyPressed() {
       break;
     }
   }
+  go = true;
+}
+
+function mousePressed() {
+  go = true;
 }
 
 let windowResized = () => resizeCanvas(windowWidth, windowHeight);
