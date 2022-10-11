@@ -7,6 +7,7 @@ let position = [];
 function setup() {
   // put setup code here
   createCanvas(windowWidth, windowHeight);
+  frameRate(30);
 }
 
 function draw() {
@@ -49,13 +50,14 @@ let displayMousePosition = () => text(`(${mouseX}, ${mouseY})`, mouseX + width /
 
 let makeSaveButton = () => {
   fill("gray");
+  let textPx = floor(width / 75);
   let rectWidth = 100;
   let rectHeight = 25;
-  let rectX = width - rectWidth;
+  let rectX = width - textWidth("Click Me To Display Saved Mouse Coordinates");
+  console.log(rectX);
   let rectY = 0;
-  let textPX = 25;
   rect(rectX, rectY, rectWidth, rectHeight);
-  fill("white");
+  fill("orange");
   textSize(textPx);
   text("Click Me To Display Saved Mouse Coordinates", width - rectWidth * 5, 0 + rectHeight);
 }
@@ -64,13 +66,11 @@ let displaySavedMousePosition = () => {
   let textX = 0;
   let textY = 0;
   for(let i = 0; i < position.length(); i += 2) {
-    text(`Mouse Position: ${position[i]}, ${position[i + 1]}`);
+    text(`Mouse Position: ${position[i]}, ${position[i + 1]}`, textX, textY);
   }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+let windowResized = () => resizeCanvas(windowWidth, windowHeight);
 
 function mouseClicked() {
   position.push(mouseX);
