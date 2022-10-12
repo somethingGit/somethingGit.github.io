@@ -25,17 +25,19 @@ let lastTime;
 let totalFrame = 0;
 let go = false;
 let gridWidth, gridHeight;
-let snakeHasMoved, snakeAiStart, ai;
+let snakeHasMoved, snakeInPattern, ai;
 
 const waitTime = 100000;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(5);
-  snakeAiStart = false;
-  ai = false;
+  ai = true;
+  snakeInPattern = false;
   savedSnakeLocationX = [totalSquaresWidth / 2 - 1, totalSquaresWidth / 2 - 2];
   savedSnakeLocationY = [totalSquaresHeight / 2, totalSquaresHeight / 2];
+  headPosition = [totalSquaresWidth / 2, totalSquaresHeight / 2];
+
 }
 
 function draw() {
@@ -44,6 +46,13 @@ function draw() {
 }
 
 let mainFunc = () => {
+  sideBarX = windowWidth / 5;
+  gridWidth = (width - sideBarX) / totalSquaresWidth;
+  gridHeight = height / totalSquaresHeight;
+  snakeLength = savedSnakeLocationX.length + 1;
+  gridWidth = (windowWidth - sideBarX) / totalSquaresWidth;
+  gridHeight = windowHeight / totalSquaresHeight;
+
   if(snakeLength - 1 === totalSquaresHeight * totalSquaresWidth) {
     gamePause = true;
     gameWin();
@@ -69,7 +78,7 @@ let falseAi = () => {
 };
 
 let trueAi = () => {
-  aiMove();
+  isSnakeOnItsWay();
 };
 
 let gameWin = () => {
@@ -82,18 +91,12 @@ let drawSidebar = () => {
 };
 
 let makeGrid = () => {
-  sideBarX = windowWidth / 5;
-  gridWidth = (width - sideBarX) / totalSquaresWidth;
-  gridHeight = height / totalSquaresHeight;
-  snakeLength = savedSnakeLocationX.length + 1;
-  gridWidth = (windowWidth - sideBarX) / totalSquaresWidth;
-  gridHeight = windowHeight / totalSquaresHeight;
-  for(let x = gridWidth; x <= width - sideBarX; x += gridWidth) {
+  for(let x = 0; x < width - sideBarX; x += gridWidth) {
     for(let y = 0; y <= height; y += gridHeight) {
       strokeWeight(1);
       stroke(160);
       fill(255);
-      rect(x - gridWidth, y, gridWidth, gridHeight);
+      rect(x, y, gridWidth, gridHeight);
     }
   }
 };
@@ -106,10 +109,9 @@ let addScore = () => {
 };
 
 let makeSnake = () => {
-  fill("red");
+  fill("green");
   rect(headPosition[0] * gridWidth, headPosition[1] * gridHeight, gridWidth, gridHeight);
   for(let i = 0; i < savedSnakeLocationX.length; i++) {
-    fill("green");
     rect(savedSnakeLocationX[i] * gridWidth, savedSnakeLocationY[i] * gridHeight, gridWidth, gridHeight);
   }
 };
@@ -135,12 +137,22 @@ let drawFruit = () => {
   //
 };
 
-let snakeOnItsWay = () => {
-  if(goX !== -1 && headPosition[0] > 0) {
+let isSnakeOnItsWay = () => {
+  if(snakeInPattern === true) {
+    aiMove();
+  }
+  else if(snakeInPattern === false) {
+    snakeIsOnItsWay();
+  }
+};
+
+let snakeIsOnItsWay = () => {
+  console.log("hello");
+  if(goX === 0 || goX === -1) {
     goY = -1;
     goX = 0;
   }
-  if(goY === -1 && headPosition[0] > 0) {
+  if(goY === -1 && goX === 0) {
     goY = 0;
     goX = -1;
   }
@@ -148,6 +160,7 @@ let snakeOnItsWay = () => {
     goX = 0;
     goY = -1;
   }
+  moveSnake();
 };
 
 let aiMove = () => {
@@ -365,4 +378,6 @@ function mousePressed() {
   go = true;
 }
 
-let windowResized = () => resizeCanvas(windowWidth, windowHeight);
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
