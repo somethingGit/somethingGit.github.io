@@ -32,7 +32,7 @@ const waitTime = 100000;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(5);
-  ai = true;
+  ai = false;
   snakeInPattern = false;
   savedSnakeLocationX = [totalSquaresWidth / 2 - 1, totalSquaresWidth / 2 - 2];
   savedSnakeLocationY = [totalSquaresHeight / 2, totalSquaresHeight / 2];
@@ -105,7 +105,7 @@ let addScore = () => {
   let textPx = 32;
   fill("black");
   textSize(textPx);
-  text(score - 1, width - sideBarX / 2 + textPx / 2);
+  text(score, width - sideBarX / 2 + textPx / 2, 50);
 };
 
 let makeSnake = () => {
@@ -147,7 +147,6 @@ let isSnakeOnItsWay = () => {
 };
 
 let snakeIsOnItsWay = () => {
-  console.log("hello");
   if(goX === 0 || goX === -1) {
     goY = -1;
     goX = 0;
@@ -275,7 +274,6 @@ let snakeEatFruit = () => {
     score++;
     
   }
-  console.log("I am called", headPosition[0], headPosition[1], aiGoAround);
   isSnakeOutOfBounds();
 };
 
@@ -291,7 +289,6 @@ let isSnakeOutOfBounds = () => {
 };
 
 let backToBeginning = () => {
-  console.log(headPosition);
   headPosition = [totalSquaresWidth / 2, totalSquaresHeight / 2];
   savedSnakeLocationX = [totalSquaresWidth / 2 - 1, totalSquaresWidth / 2 - 2];
   savedSnakeLocationY = [totalSquaresHeight / 2, totalSquaresHeight / 2];
@@ -355,27 +352,10 @@ function keyPressed() {
         hasMoved = false;
       }
       break;
-    case 32:
-      frameRate(1/20);
-      break;
-    case 192:
-      if(gamePause === true) {
-        gamePause = false;
-      }
-      else if(gamePause === false) {
-        gamePause = true;
-      }
-      console.log(gamePause);
-      break;
     default:
       break;
     }
   }
-  go = true;
-}
-
-function mousePressed() {
-  go = true;
 }
 
 function windowResized() {
