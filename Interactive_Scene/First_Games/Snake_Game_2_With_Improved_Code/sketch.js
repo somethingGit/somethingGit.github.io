@@ -283,7 +283,7 @@ let isSnakeOutOfBounds = () => {
       backToBeginning();
     }
   }
-  if(headPosition[0] > totalSquaresWidth - 1 || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight - 1 || headPosition[1] < 0) {
+  if(headPosition[0] > totalSquaresWidth || headPosition[0] < 0 || headPosition[1] > totalSquaresHeight - 1 || headPosition[1] < 0) {
     backToBeginning();
   }
 };
