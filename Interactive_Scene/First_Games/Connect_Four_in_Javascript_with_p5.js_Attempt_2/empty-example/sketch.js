@@ -34,6 +34,10 @@ function setup() {
 function draw() {
   // put drawing code here
   background(220);
+  start();
+}
+
+function start() {
   makeGrid();
 }
 
@@ -66,7 +70,7 @@ function makeGrid() {
   square(x, y, w);
  
   for(let y1 = y + dif; y1 <= y + w - dif; y1 += dif) {
-    for(let x1 = x + dif; x1 < x + w ; x1 += dif) {
+    for(let x1 = x + dif; x1 <= x + w - dif; x1 += dif) {
       if(grid[i] === 0) {
         fill("white");
       }
@@ -118,14 +122,15 @@ function makeMouseHover() {
 }
 
 function mouseClicked() {
-  if(mouseX <= column1 + dif / 2 && a < 0 || mouseX <= column2 + dif / 2 && b < 0 || mouseX <= column3 + dif / 2 && c < 0 || mouseX <= column4 + dif / 2 && d < 0 || mouseX <= column5 + dif / 2 && e < 0 || mouseX <= column6 + dif / 2 && f < 0) {
+  if(oneLine() === true) {
     console.log("Too much");
   }
-  else {
+  else if(oneLine() === false) {
     console.log(a,b,c,d,e,f)
     connectFourPlay();
   }
 }
+let oneLine = () => {return mouseX <= column1 + dif / 2 && a < 0 || mouseX <= column2 + dif / 2 && b < 0 || mouseX <= column3 + dif / 2 && c < 0 || mouseX <= column4 + dif / 2 && d < 0 || mouseX <= column5 + dif / 2 && e < 0 || mouseX <= column6 + dif / 2 && f < 0};
 
 function connectFourPlay() {
   if(player === 1) {
