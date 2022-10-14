@@ -88,5 +88,4 @@ function doubleClicked() {
   if(mouseX < width && mouseX > width - textWidth("Click Me To Display Saved Mouse Coordinates") && mouseY < 25 && mouseY > 0) {
     displaySaves = 1;
   }
-  displaySaves = 1;
 }

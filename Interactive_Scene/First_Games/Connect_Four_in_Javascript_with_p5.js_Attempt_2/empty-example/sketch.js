@@ -9,25 +9,25 @@ let grid = [
 
 let gridLength = grid.length;
 
-let a, b, c, d, e, f, fr;
-let w, x, y, diameter, dif, column1, column2, column3, column4, column5, column6, row1, row2, row3, row4, row5, row6;
-let player;
+let a, b, c, d, e, f, fr, w, x, y, diameter, dif, column1, column2, column3, column4, column5, column6, row1, row2, row3, row4, row5, row6;
+let player, win;
+const gridHeight = 6;
 
 function playerColor() {
   if(player === -1) {
-    return color("yellow");
+    return color("black");
   }
   else if(player === 1) {
     return color("red");
   }
   else {
-    return color("yellow");
+    return color("black");
   }
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  a = 5, b = 5, c = 5, d = 5, e = 5, f = 5;
+  a = 5, b = 5, c = 5, d = 5, e = 5, f = 5, win = false;
   frameRate(fr);
 }
 
@@ -66,12 +66,12 @@ function makeGrid() {
   square(x, y, w);
  
   for(let y1 = y + dif; y1 <= y + w - dif; y1 += dif) {
-    for(let x1 = x + dif; x1 <= x + w - dif; x1 += dif) {
+    for(let x1 = x + dif; x1 < x + w ; x1 += dif) {
       if(grid[i] === 0) {
         fill("white");
       }
       else if(grid[i] === 1) {
-        fill("yellow");
+        fill("black");
       }
       else if(grid[i] === -1) {
         fill("red");
@@ -80,7 +80,10 @@ function makeGrid() {
       circle(x1, y1, diameter);
     }
   }
+  if(win === true) {
+  }
   makeMouseHover();
+  console.log(win);
 }
 
 function makeMouseHover() {
@@ -89,33 +92,39 @@ function makeMouseHover() {
 
     if(mouseX <= column1 + dif / 2) {
       fill(c);
-      circle(column1, y - 30, diameter);
+      circle(column1, y - 50, diameter);
     }
     else if(mouseX <= column2 + dif / 2) {
       fill(c);
-      circle(column2, y - 30, diameter);
+      circle(column2, y - 50, diameter);
     }
     else if(mouseX <= column3 + dif / 2) {
       fill(c);
-      circle(column3, y - 30, diameter);
+      circle(column3, y - 50, diameter);
     }
     else if(mouseX <= column4 + dif / 2) {
       fill(c);
-      circle(column4, y - 30, diameter);
+      circle(column4, y - 50, diameter);
     }
     else if(mouseX <= column5 + dif / 2) {
       fill(c);
-      circle(column5, y - 30, diameter);
+      circle(column5, y - 50, diameter);
     }
-    else if(mouseX <= column6 + dif /2) {
+    else if(mouseX <= column6 + dif / 2) {
       fill(c);
-      circle(column6, y - 30, diameter);
+      circle(column6, y - 50, diameter);
     }
   }
 }
 
 function mouseClicked() {
-  connectFourPlay();
+  if(mouseX <= column1 + dif / 2 && a < 0 || mouseX <= column2 + dif / 2 && b < 0 || mouseX <= column3 + dif / 2 && c < 0 || mouseX <= column4 + dif / 2 && d < 0 || mouseX <= column5 + dif / 2 && e < 0 || mouseX <= column6 + dif / 2 && f < 0) {
+    console.log("Too much");
+  }
+  else {
+    console.log(a,b,c,d,e,f)
+    connectFourPlay();
+  }
 }
 
 function connectFourPlay() {
@@ -138,7 +147,6 @@ function placeToken() {
       grid[gridCoordinates + a * 6] = player;
       a--;
       console.log("Column 1");
-      //tokenDrop(column1);
     }
   }
   else if(mouseX <= column2 + dif / 2) {
@@ -146,7 +154,6 @@ function placeToken() {
     if(gridCoordinates + b < gridLength) {
       grid[gridCoordinates + b * 6] = player;
       b--;
-      //tokenDrop(column2);
     }
   }
   else if(mouseX <= column3 + dif / 2) {
@@ -154,7 +161,6 @@ function placeToken() {
     if(gridCoordinates + c < gridLength) {
       grid[gridCoordinates + c * 6] = player;
       c--;
-      //tokenDrop(column3);
     }
   }
   else if(mouseX <= column4 + dif / 2) {
@@ -162,7 +168,6 @@ function placeToken() {
     if(gridCoordinates + d < gridLength) {
       grid[gridCoordinates + d * 6] = player;
       d--;
-      //tokenDrop(column4);
     }
   }
   else if(mouseX <= column5 + dif / 2) {
@@ -171,7 +176,6 @@ function placeToken() {
       grid[gridCoordinates + e * 6] = player;
       e--;
       console.log("Played");
-      //tokenDrop(column5);
     }
   }
   else if(mouseX <= column6 + dif /2) {
@@ -179,11 +183,9 @@ function placeToken() {
     if(gridCoordinates + f < gridLength) {
       grid[gridCoordinates + f * 6] = player;
       f--;
-      //tokenDrop(column6);
     }
   }
   checkForHorizontalWin();
-  console.log(grid);
 }
 
 function checkForHorizontalWin() {
@@ -198,22 +200,11 @@ function checkForHorizontalWin() {
       player2Win++;
       player1Win = 0;
     }
+    if(player1Win === 4 || player2Win === 4) {
+      win = true;
+      break;
+    }
   }
-}
-
-function tokenDrop(column, row) {
-  let y = height / 2 - w / 2;
-  let startDropLocation = y + 30;
-  while(startDropLocation >= row) {
-    fill(playerColor());
-    circle(column, startDropLocation, diameter);
-    startDropLocation--;
-  }
-  makeTokens();
-}
-
-function makeTokens() {
-
 }
 
 function windowResized() { 
