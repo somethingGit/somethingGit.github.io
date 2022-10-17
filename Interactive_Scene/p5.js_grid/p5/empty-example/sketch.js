@@ -1,51 +1,50 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
+// p5.js grid positions. 
+// Jason
+// Sept 04 2022
+//
+// Extra for Experts:
+// - I added the ability to resize the canvas based off the window size. 
 
-let diameter, squareDistance, textBoxSize, textPx, savedPosition, displaySaves;
+let diameter, squareDistance, textBoxSize, textPx, savedPosition, displaySaves, savedText1, savedText2;
 //Sets up canvas and sets global varibles
 function setup() {
-	// put setup code here
-	createCanvas(windowWidth, windowHeight);
-  	displaySaves = 0;
-	diameter = 0;
-	squareDistance = 25;
-	textBoxSize = 500;
-	savedPosition = [];
-	frameRate(30);
+  // put setup code here
+  createCanvas(windowWidth, windowHeight);
+  displaySaves = 0;
+  diameter = 0;
+  squareDistance = 25;
+  textBoxSize = 500;
+  savedText1 = "", savedText2 = "";
+  frameRate(30);
 }
 //Draw loop that draws functions
 function draw() {
-	// put drawing code here
-	resizeCanvas(windowWidth, windowHeight);
-	background(255);
-	diameter = width / 100;
-	textPx = width / 75;
-	textBoxSize = textPx * 5;
-	fill("white");
-	strokeWeight(2);
-	mousePosition();
-	strokeWeight(0.5);
-	fill("gray");
-	makeGrid();
-	fill(150);
-	displayCanvasSize();
-	fill("black");
-	if(displaySaves === 0) {
-		displayMousePosition();
-		makeSaveButton();
-	}
-	else if(displaySaves === 1) {
-		displaySavedMousePosition();
-	}
+  // put drawing code here
+  resizeCanvas(windowWidth, windowHeight);
+  background(255);
+  diameter = width / 100;
+  textPx = width / 75;
+  textBoxSize = textPx * 5;
+  fill("white");
+  strokeWeight(2);
+  mousePosition();
+  strokeWeight(0.5);
+  fill("gray");
+  makeGrid();
+  fill(150);
+  displayCanvasSize();
+  fill("black");
+  displayMousePosition();
+  displaySavedMousePosition();
 }
 //Shows mouse position with a circle.
 let mousePosition = () => circle(mouseX, mouseY, diameter);
 //Makes a grid
 let makeGrid = () => {
-	for(let i = 0; i < width; i += squareDistance) {
-		line(i, 0, i, height);
-		line(0, i, width, i);
-	}
+  for(let i = 0; i < width; i += squareDistance) {
+	line(i, 0, i, height);
+  	line(0, i, width, i);
+  }
 };
 //Shows canvas size in the middle of the screen
 let displayCanvasSize = () =>  {
@@ -57,35 +56,14 @@ let displayCanvasSize = () =>  {
 };
 //Displays text of the mouse position
 let displayMousePosition = () => text(`(${mouseX}, ${mouseY})`, mouseX + width / 100, mouseY - height / 100);
-//Makes text that when clicked should make another function display the mouse positions
-let makeSaveButton = () => {
-	let textPx = floor(width / 75);
-	let rectWidth = textWidth("Click Me To Display Saved Mouse Coordinates");
-	let rectHeight = 25;
-	fill("black");
-	textSize(textPx);
-	text("Click Me To Display Saved Mouse Coordinates", width - rectWidth * 5, 0 + rectHeight);
-};
-//Shows the mouse positions that have been saved
+//Displays the saved mouse position in the top left corner of the screen
 let displaySavedMousePosition = () => {
-	let textX = 0;
-	let textY = 0;
-  textLeading(20);
-	for(let i = 0; i < savedPosition.length; i += 2) {
-		text(`Mouse Position: ${savedPosition[i]}, ${savedPosition[i + 1]}`, textX, textY);
-	}
+  text(`${savedText1}, ${savedText2}`, 5, 20);
 };
 //Resizes the window
 let windowResized = () => resizeCanvas(windowWidth, windowHeight);
 //Saves mouse position in a list
 function mouseClicked() {
-	savedPosition.push(mouseX);
-	savedPosition.push(mouseY);
-	dispalySaves = 1;
-}
-//Starts the displaying of saved mouse positions when double clicking a square. 
-function doubleClicked() {
-  if(mouseX < width && mouseX > width - textWidth("Click Me To Display Saved Mouse Coordinates") && mouseY < 25 && mouseY > 0) {
-    displaySaves = 1;
-  }
+  savedText1 = mouseX;
+  savedText2 = mouseY;
 }
