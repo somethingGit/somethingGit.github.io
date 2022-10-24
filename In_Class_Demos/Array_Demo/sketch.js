@@ -13,21 +13,12 @@ let fr = 60;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  frameRate(fr);
-  // eslint-disable-next-line no-undef
-  setDeltaTime = deltaTime;
 }
 
 function draw() {
   background(220);
   console.log(fr);
-  if(setDeltaTime < deltaTime && fr > 1) {
-    fr--;
-    console.log(`Framerate has slown ${fr}`);
-  }
-  else if(setDeltaTime > deltaTime) {
-    fr++;
-  }
+  //Make AutoChange Framerate
   makeCircle();
 }
 
@@ -38,11 +29,27 @@ function makeCircle() {
       circle(circleArray[i], circleArray[i + 1], diameter);
       circleArray[i] += circleArray[i + 6];
       circleArray[i+1] += circleArray[i + 7];
-      if(circleArray[i] >= width - diameter / 2 || circleArray[i] <= 0 + diameter / 2 || circleArray[i] === mouseX) {
+      if(circleArray[i] >= width - diameter / 2 || circleArray[i] <= diameter / 2) {
         circleArray[i+6] *= -1;
       }
-      if(circleArray[i+1] >= height - diameter / 2 || circleArray[i + 1] <= 0 + diameter / 2 || circleArray[i+1] === mouseY) {
+      if(circleArray[i+1] >= height - diameter / 2 || circleArray[i + 1] <= diameter / 2) {
         circleArray[i + 7] *= -1;
+      }
+      if(circleArray[i+1] + diameter >= mouseY && circleArray[i+1] <= mouseY && circleArray[i] + diameter >= mouseX && circleArray[i] <= mouseX) {
+        circleArray[i+6] *= -1;
+        circleArray[i+7] *= -1;
+      }
+      if(circleArray[i] >= width - diameter/2) {
+        circleArray[i] = width-diameter/2-1;
+      }
+      else if(circleArray[i] <= diameter / 2) {
+        circleArray[i] = diameter/2-1;
+      }
+      if(circleArray[i+1] >= height-diameter/2) {
+        circleArray[i+1] = height-diameter/2-1;
+      }
+      else if(circleArray[i+1] <= diameter/2) {
+        circleArray[i+1] = diameter/2+1;
       }
     }
   }
