@@ -6,6 +6,7 @@ let circles = [];
 
 function setup() {
   createCanvas(windowWidth,windowHeight);
+  frameRate(200);
 }
 
 function draw() {
@@ -18,6 +19,16 @@ function moveBall() {
   for(let i = 0; i < circles.length; i++) {
     circles[i].x += circles[i].dx;
     circles[i].y += circles[i].dy;
+    for(let j=0;j<circles.length;j++) {
+      if(checkCollision(circles[i], circles[j]) === true && i !== j) {
+        let tempDx = circles[i].dx;
+        let tempDy = circles[i].dy;
+        circles[i].dx = circles[j].dx;
+        circles[i].dy = circles[j].dy;
+        circles[j].dx = tempDx;
+        circles[j].dy = tempDy;
+      }
+    }
     if(circles[i].x >= width - circles[i].diameter / 2 || circles[i].x <= circles[i].diameter / 2) {
       circles[i].dx *= -1;
     }
@@ -33,6 +44,9 @@ function displayBall() {
     circle(thisCircle.x, thisCircle.y, thisCircle.diameter);
   }
 }
+
+let checkCollision = (ball1, ball2) => dist(ball1.x, ball1.y, ball2.x, ball2.y) < ball1.diameter/2 + ball2.diameter/2; 
+
 
 function spawnBall(tempX, tempY) {
   let newBall = {
