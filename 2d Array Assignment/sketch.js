@@ -11,14 +11,12 @@ let totalSquares;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  totalSquares = 100;
-  squaresSize = 5000 / totalSquares;
   makeGrid(totalSquares, squaresSize);
 }
 
 function makeGrid(totalSquares, squaresSize) {
-  for(let x = 0; x < totalSquares; x += squaresSize) {
-    for(let y = 0; y < totalSquares; y += squaresSize) {
+  for(let x = 0; x <= totalSquares * squaresSize; x += squaresSize) {
+    for(let y = 0; y <= totalSquares * squaresSize; y += squaresSize) {
       grid.push([x,y]);
     }
   }
@@ -26,18 +24,11 @@ function makeGrid(totalSquares, squaresSize) {
 
 function draw() {
   background(220);
-  squaresSize = 5000 / totalSquares;
-  for(let i = 0; i < grid.length; i++) {
-    square(grid[i][0], grid[i][1], squaresSize);
-  }
+  displayGrid();
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  grid = [];
-  for(let x = 0; x < totalSquares; x += squaresSize) {
-    for(let y = 0; y < totalSquares; y += squaresSize) {
-      grid.push([x,y]);
-    }
+function displayGrid() {
+  for(let i = 0; i < grid.length; i++) {
+    square(grid[i][0] * squaresSize, grid[i][1] * squaresSize, squaresSize);
   }
 }
