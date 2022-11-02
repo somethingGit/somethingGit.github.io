@@ -10,6 +10,16 @@ let cellHeight;
 let playerX = 0; 
 let playerY = 0; 
 
+let stoneImg;
+let grassImg;
+let character;
+
+function preload() {
+  stoneImg = loadImage("Images/rock 1.png");
+  grassImg = loadImage("Images/grass2.png");
+  character = loadImage("Images/characters1.png");
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   cellWidth = width/COLS;
@@ -63,15 +73,15 @@ function displayGrid(grid) {
   for (let y=0; y<ROWS; y++) {
     for (let x=0; x<COLS; x++) {
       if (grid[y][x] === 0) {
-        fill("white");
+        image(grassImg, x*cellWidth, y*cellHeight, cellWidth, cellHeight);
       }
       else if (grid[y][x] === 1) {
-        fill("black");
+        image(stoneImg, x*cellWidth, y*cellHeight, cellWidth, cellHeight);
       }
       else if(grid[y][x] === 9) {
-        fill("red");
+        image(grassImg, x*cellWidth, y*cellHeight, cellWidth, cellHeight);
+        image(character, x * cellWidth, y * cellHeight, cellWidth, cellHeight);
       }
-      rect(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
     }
   }
 }
