@@ -51,9 +51,14 @@ function displayGrid() {
 
 function mouseMove() {
   for(let i = 0; i < grid.length; i++) {
-    if(mouseX > grid[i][0] && mouseY > grid[i][1] && mouseX < grid[i+1][0] && mouseY < grid[i+1][1]) {
+    if(i < grid.length - 1 && mouseX > grid[i][0] + 1 && mouseY > grid[i][1] + 1 && mouseX < grid[i+1][0] + squaresSize && mouseY < grid[i+1][1]) {
       fill("red");
       circle(grid[i][0] + squaresSize / 2, grid[i][1] + squaresSize / 2, squaresSize / 2);
+      console.log(grid[i][0] + squaresSize / 2, grid[i][1] + squaresSize / 2, squaresSize / 2);
+    }
+    else if(i >= grid.length) {
+      fill("red");
+      circle((grid[i][0] + squaresSize / 2, grid[i][1] +  squaresSize / 2, squaresSize / 2));
     }
   }
 }
