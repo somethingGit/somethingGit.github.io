@@ -55,30 +55,55 @@ function displayGrid() {
 
 function tokenDisplay() {
   for(let i = grid.length - 1; i > 0; i--) {
-    if(shouldDisplay(i) && playerIsThere(i)) {
-      fill("red");
+    if(shouldDisplay(i)) {
+      if(player === 1) {
+        fill("red");
+      }
+      else if(player === -1) {
+        fill("black");
+      }
       circle(grid[i][0] + squaresSize / 2, grid[i][1] + squaresSize / 2, squaresSize / 2);
     }
   }
 }
 
-let shouldDisplay = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize && (grid[i - 1][2] === player * -1 && grid[i][2] !== player || grid[i - 8][2] === player * -1 && grid[i][2] !== player || grid[i + 8][2] === player * -1 && grid[i][2] !== player || grid[i + 1][2] === player * -1 && grid[i][2] !== player);
+let shouldDisplay = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize && isThereToken(i) && (isVertical(i) || isHorizontal(i));
 
-function playerIsThere(x) {
-  let num = multipleOfEight(x);
-  for(let i = num; i < num + sqrt(totalSquares); i++) {
-    if(grid[i] === player) {
+let isThereToken = (i) => grid[i - 1][2] === player * -1 && grid[i][2] !== player || grid[i - 8][2] === player * -1 && grid[i][2] !== player || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1;
+
+function isVertical(x) {
+  for(let i = multipleOfEight(x); i < multipleOfEight(x) + sqrt(totalSquares); i++) {
+    if(grid[i][2] === player) {
       return true;
     }
-    console.log(grid[i] === player);
   }
   return false;
 }
 
 function multipleOfEight(x) {
+  x = floor(x);
   while(x % 8 !== 0) {
     x--;
     if(x % 8 === 0) {
+      return x;
+    }
+  }
+  return x;
+}
+
+function isHorizontal(x) {
+  for(let i = lowestPossible(x); i < totalSquares; i+=8) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function lowestPossible(x) {
+  while(x >= 8) {
+    x -= 8;
+    if(x < 8) {
       return x;
     }
   }
@@ -99,6 +124,12 @@ function repairOnWindowSizeChange() {
     grid.pop();
   }
   grid.reverse();
+}
+
+function mouseClicked() {
+  if(isVertical) {
+
+  }
 }
 
 function windowResized() {
