@@ -9,6 +9,7 @@ let grid = [];
 let squaresSize;
 let totalSquares = 8*8;
 let player = 1;
+let gridClicked;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -62,17 +63,20 @@ function tokenDisplay() {
       else if(player === -1) {
         fill("black");
       }
+      gridClicked = i;
       circle(grid[i][0] + squaresSize / 2, grid[i][1] + squaresSize / 2, squaresSize / 2);
     }
   }
 }
 
-let shouldDisplay = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize && isThereToken(i) && (isVertical(i) || isHorizontal(i));
+let shouldDisplay = (i) => whichGridIsMouse(i) && isThereToken(i) && (isVertical(i) || isHorizontal(i));
+
+let whichGridIsMouse = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize;
 
 let isThereToken = (i) => grid[i - 1][2] === player * -1 && grid[i][2] !== player || grid[i - 8][2] === player * -1 && grid[i][2] !== player || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1;
 
 function isVertical(x) {
-  for(let i = multipleOfEight(x); i < multipleOfEight(x) + sqrt(totalSquares); i++) {
+  for(let i = lowestMultipleOfEight(x); i < lowestMultipleOfEight(x) + sqrt(totalSquares); i++) {
     if(grid[i][2] === player) {
       return true;
     }
@@ -80,7 +84,7 @@ function isVertical(x) {
   return false;
 }
 
-function multipleOfEight(x) {
+function lowestMultipleOfEight(x) {
   x = floor(x);
   while(x % 8 !== 0) {
     x--;
@@ -127,8 +131,39 @@ function repairOnWindowSizeChange() {
 }
 
 function mouseClicked() {
-  if(isVertical) {
+  if(isVertical(gridClicked)) {
+    if(!isItBelow()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count--;
+      }
+    }
+    else if(isItBelow()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count++;
+      }
+    }
+  }
+}
 
+function isItBelow() {
+  for(let i = gridClicked; i < nextMultipleOfEight(gridClicked); i++) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+  }
+}
+
+function nextMultipleOfEight(x) {
+  let count = x + sqrt(totalSquares);
+  while (x < count) {
+    x++;
+    if(x % 8 === 0) {
+      return x;
+    }
   }
 }
 
