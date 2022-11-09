@@ -31,13 +31,19 @@ function makeGrid(totalSquares, squaresSize) {
 
 function draw() {
   background(220);
-  displayGrid();
-  if(shouldCheck()) {
-    tokenDisplay();
+  if(height < width) {
+    displayGrid();
+    if(shouldShowToken()) {
+      tokenDisplay();
+    }
+  }
+  else {
+    fill("black");
+    text("Please make your window width larger", width / 2 - textWidth("Please make your window width larger") / 2, height / 2 - (textAscent("Please make your window width larger") + textDescent("Please make your window width larger")) / 2);
   }
 }
 
-let shouldCheck = () => mouseX >= grid[8][0] && mouseY >= grid[8][1] && mouseX < grid[grid.length-1 - 8][0] && mouseY < grid[grid.length - 1 - 8][0];
+let shouldShowToken = () => mouseX >= grid[8][0] && mouseY >= grid[8][1] && mouseX < grid[grid.length-1 - 8][0] && mouseY < grid[grid.length - 1 - 8][0];
 
 function displayGrid() {
   for(let i = 0; i < grid.length; i++) {
@@ -69,11 +75,13 @@ function tokenDisplay() {
   }
 }
 
-let shouldDisplay = (i) => whichGridIsMouse(i) && isThereToken(i) && (isVertical(i) || isHorizontal(i));
+let shouldDisplay = (i) => whichGridIsMouse(i) && isThereToken(i) && mouseInPlayers(i) && (isVertical(i) || isHorizontal(i));
 
 let whichGridIsMouse = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize;
 
-let isThereToken = (i) => grid[i][2] !== player && grid[i - 1][2] === player * -1 || (grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1);
+let isThereToken = (i) => grid[i - 1][2] === player * -1 || grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1;
+
+let mouseInPlayers = (i) => grid[i][2] !== player && grid[i][2] !== player * -1;
 
 function isVertical(x) {
   for(let i = lowestMultipleOfEight(x); i < lowestMultipleOfEight(x) + sqrt(totalSquares); i++) {
@@ -131,8 +139,15 @@ function repairOnWindowSizeChange() {
 }
 
 function mouseClicked() {
-  if(grid[gridClicked][2] !== player && grid[gridClicked][2] !== player * -1) {
-    if(isVertical(gridClicked)) {
+  if(mouseInPlayers(gridClicked) && isThereToken(gridClicked)) {
+    if(isItBelow()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count++;
+      }
+    }
+    else if(isVertical(gridClicked)) {
       if(!isItBelow()) {
         let count = gridClicked;
         while(grid[count][2] !== player) {
@@ -140,22 +155,24 @@ function mouseClicked() {
           count--;
         }
       }
-      else if(isItBelow()) {
+    }
+    else if(isHorizontal(gridClicked)) {
+      if(isClickRight()) {
         let count = gridClicked;
         while(grid[count][2] !== player) {
           grid[count][2] = player;
-          count++;
+          count += 8;
         }
       }
-      player *= -1;
-    }
-    /* else if(isHorizontal(gridClicked)) {
-      if(isClickRight()) {
+      else if(!isClickRight()) {
         let count = gridClicked;
-        
+        while(grid[count][2] !== player) {
+          grid[count][2] = player;
+          count -= 8;
+        }
       }
-      player *= -1;
-    } */
+    }
+    player *= -1;
   }
 }
 
