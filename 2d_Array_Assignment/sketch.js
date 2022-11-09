@@ -73,7 +73,7 @@ let shouldDisplay = (i) => whichGridIsMouse(i) && isThereToken(i) && (isVertical
 
 let whichGridIsMouse = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize;
 
-let isThereToken = (i) => grid[i - 1][2] === player * -1 && grid[i][2] !== player || grid[i - 8][2] === player * -1 && grid[i][2] !== player || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1;
+let isThereToken = (i) => grid[i][2] !== player && grid[i - 1][2] === player * -1 || (grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1);
 
 function isVertical(x) {
   for(let i = lowestMultipleOfEight(x); i < lowestMultipleOfEight(x) + sqrt(totalSquares); i++) {
@@ -131,21 +131,31 @@ function repairOnWindowSizeChange() {
 }
 
 function mouseClicked() {
-  if(isVertical(gridClicked)) {
-    if(!isItBelow()) {
-      let count = gridClicked;
-      while(grid[count][2] !== player) {
-        grid[count][2] = player;
-        count--;
+  if(grid[gridClicked][2] !== player && grid[gridClicked][2] !== player * -1) {
+    if(isVertical(gridClicked)) {
+      if(!isItBelow()) {
+        let count = gridClicked;
+        while(grid[count][2] !== player) {
+          grid[count][2] = player;
+          count--;
+        }
       }
-    }
-    else if(isItBelow()) {
-      let count = gridClicked;
-      while(grid[count][2] !== player) {
-        grid[count][2] = player;
-        count++;
+      else if(isItBelow()) {
+        let count = gridClicked;
+        while(grid[count][2] !== player) {
+          grid[count][2] = player;
+          count++;
+        }
       }
+      player *= -1;
     }
+    /* else if(isHorizontal(gridClicked)) {
+      if(isClickRight()) {
+        let count = gridClicked;
+        
+      }
+      player *= -1;
+    } */
   }
 }
 
@@ -155,6 +165,7 @@ function isItBelow() {
       return true;
     }
   }
+  return false;
 }
 
 function nextMultipleOfEight(x) {
@@ -165,6 +176,15 @@ function nextMultipleOfEight(x) {
       return x;
     }
   }
+}
+
+function isClickRight() {
+  for(let i = gridClicked; i < grid.length - sqrt(totalSquares); i += sqrt(totalSquares)) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function windowResized() {
