@@ -43,7 +43,7 @@ function draw() {
   }
 }
 
-let shouldShowToken = () => mouseX >= grid[8][0] && mouseY >= grid[8][1] && mouseX < grid[grid.length-1 - 8][0] && mouseY < grid[grid.length - 1 - 8][0];
+let shouldShowToken = () => mouseX >= grid[8][0] && mouseY >= grid[8][1] && mouseX < grid[grid.length - 8][0] && mouseY < grid[grid.length - 8][0];
 
 function displayGrid() {
   for(let i = 0; i < grid.length; i++) {
@@ -75,11 +75,9 @@ function tokenDisplay() {
   }
 }
 
-let shouldDisplay = (i) => whichGridIsMouse(i) && isThereToken(i) && mouseInPlayers(i) && (isVertical(i) || isHorizontal(i));
+let shouldDisplay = (i) => whichGridIsMouse(i) && mouseInPlayers(i) && (isVertical(i) && (grid[i - 1][2] === player * - 1 || grid[i + 1][2] === player * -1) || isHorizontal(i) && (grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1));
 
 let whichGridIsMouse = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize;
-
-let isThereToken = (i) => grid[i - 1][2] === player * -1 || grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1 || grid[i + 1][2] === player * -1;
 
 let mouseInPlayers = (i) => grid[i][2] !== player && grid[i][2] !== player * -1;
 
@@ -139,41 +137,51 @@ function repairOnWindowSizeChange() {
 }
 
 function mouseClicked() {
-  if(mouseInPlayers(gridClicked) && isThereToken(gridClicked)) {
-    if(isItBelow()) {
+  if(mouseInPlayers(gridClicked) && shouldShowToken()) {
+    activateMove();
+  }
+}
+
+function activateMove() {
+  if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
+    let count = gridClicked;
+    while(grid[count][2] !== player) {
+      grid[count][2] = player;
+      count++;
+    }
+  }
+  if(isVertical(gridClicked)) {
+    if(!isItBelow() && grid[gridClicked - 1][2] === player * -1) {
       let count = gridClicked;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
-        count++;
+        count--;
       }
     }
-    else if(isVertical(gridClicked)) {
-      if(!isItBelow()) {
-        let count = gridClicked;
-        while(grid[count][2] !== player) {
-          grid[count][2] = player;
-          count--;
-        }
-      }
-    }
-    else if(isHorizontal(gridClicked)) {
-      if(isClickRight()) {
-        let count = gridClicked;
-        while(grid[count][2] !== player) {
-          grid[count][2] = player;
-          count += 8;
-        }
-      }
-      else if(!isClickRight()) {
-        let count = gridClicked;
-        while(grid[count][2] !== player) {
-          grid[count][2] = player;
-          count -= 8;
-        }
-      }
-    }
-    player *= -1;
   }
+  if(isHorizontal(gridClicked)) {
+    if(isClickRight() && grid[gridClicked + 8][2] === player * -1) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count += 8;
+      }
+    }
+    if(!isClickRight() && grid[gridClicked - 8][2] === player * -1) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count -= 8;
+      }
+    }
+  }
+  if(isDiagonal()) {
+  }
+  player *= -1;
+}
+
+function isDiagonal() {
+  for(let i = 0; i < activateMove;)
 }
 
 function isItBelow() {
@@ -207,4 +215,13 @@ function isClickRight() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   repairOnWindowSizeChange();
+}
+
+//Remember to delete this debug code when finished with project
+function getCurrentSquare() {
+  for(let i = grid.length - 1; i > 0; i--) {
+    if(mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize) {
+      return i;
+    }
+  }
 }
