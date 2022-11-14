@@ -281,6 +281,7 @@ function mouseClicked() {
   if(mouseInPlayers(gridClicked) && shouldShowToken()) {
     activateMove();
   }
+  console.log("Mouse was clicked");
   // for(let i = 0; i < buttons.length; i++) {
   //   if(checkForButtonClick(i)) {
   //     if(buttons[i][5] === false) {
@@ -321,49 +322,47 @@ function winner() {
 // Checks if a token may be placed, then places the token/tokens.
 // Lastly, it will change the player. 
 function activateMove() {
+  grid[gridClicked][2] = player;
   checkHorizontal();
   checkVertical();
   checkDiagonal();
   clack.play();
+  player *= -1;
 }
 
 // Makes the vertical tokens if it should.
 function checkVertical() {
   if(isItAbove() && grid[gridClicked - 1][2] === player * -1) {
-    let count = gridClicked;
+    let count = gridClicked - 1;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count--;
     }
-    player *= -1;
   }
   if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
-    let count = gridClicked;
+    let count = gridClicked + 1;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count++;
     }
-    player *= -1;
   }
 }
 
 // Sets the horizontal tokens if it should. 
 function checkHorizontal() {
   if(isClickRight() && grid[gridClicked + 8][2] === player * -1) {
-    let count = gridClicked;
+    let count = gridClicked + 8;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count += 8;
     }
-    player *= -1;
   }
   if(isClickLeft() && grid[gridClicked - 8][2] === player * -1) {
-    let count = gridClicked;
+    let count = gridClicked - 8;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count -= 8;
     }
-    player *= -1;
   }
 }
 
@@ -371,36 +370,32 @@ function checkHorizontal() {
 function checkDiagonal() {
   if(isDiagonal(gridClicked)) {
     if(topRight()) {
-      let count = gridClicked;
+      let count = gridClicked + 7;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count += 7;
       }
-      player *= -1;
     }
     if(bottomRight()) {
-      let count = gridClicked;
+      let count = gridClicked + 9;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count += 9;
       }
-      player *= -1;
     }
     if(topLeft()) {
-      let count = gridClicked;
+      let count = gridClicked - 9;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count -= 9;
       }
-      player *= -1;
     }
     if(bottomLeft()) {
-      let count = gridClicked;
+      let count = gridClicked - 7;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count -= 7;
       }
-      player *= -1;
     }
   }
   
