@@ -3,13 +3,21 @@
 // October 31 2022
 // 
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I believe that the alost perfect window resize and
+// the use of try/catch is should give me this extra
+// for experts. Other things are the use of functin that
+// could be added as a library. My draw loop is not too 
+// cluttered and is used to call other functions. My use
+// of the 2d array is unique as I not only used it to store
+// the x, y but also whether there is a token in that 
+// place and what color is the token if there is one. There 
+// is also custom sounds made in audacity. 
 
 // These are all of the global variables in my game. They will
 // determine the place of the grid, the square size, the total
 // amount of square, the current plyer, the grid that was clicked
-// the side bar width, and the 
-let grid = [], squaresSize, totalSquares, player, gridClicked, whoWins, sideBarWidth, endScreenColor = [] /*, buttons = []*/;
+// the side bar width.
+let grid = [], squaresSize, totalSquares, player, gridClicked, whoWins, sideBarWidth, clack /*, buttons = []*/;
 
 // A test variable for the make button function.
 // let checkVariable = false;
@@ -18,6 +26,12 @@ let grid = [], squaresSize, totalSquares, player, gridClicked, whoWins, sideBarW
 // as the window width and window height. It will then set the 
 // values of the global variables and will setup the starting
 // tokens. 
+
+function preload() {
+  soundFormats("ogg");
+  clack = loadSound("Assets/clack.ogg");
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   totalSquares = 64;
@@ -30,9 +44,6 @@ function setup() {
   grid[28][2] = -1;
   grid[35][2] = -1;
   grid[36][2] = 1;
-  endScreenColor.push(255);
-  endScreenColor.push(255);
-  endScreenColor.push(255);
   
   // This also has to do with my want to build a make button 
   // function. 
@@ -111,6 +122,7 @@ function displayGrid() {
   }
 }
 
+// Displays the current player in a separate place. 
 function currentPlayer() {
   if(player === 1) {
     fill("red");
@@ -281,6 +293,7 @@ function mouseClicked() {
   // }
 }
 
+// Finds the winner. 
 function winner() {
   if(checkForWin()) {
     let playerOne = 0; 
@@ -308,48 +321,90 @@ function winner() {
 // Checks if a token may be placed, then places the token/tokens.
 // Lastly, it will change the player. 
 function activateMove() {
-  if(isVertical(gridClicked)) {
-    if(!isItBelow() && grid[gridClicked - 1][2] === player * -1) {
-      let count = gridClicked;
-      while(grid[count][2] !== player) {
-        grid[count][2] = player;
-        count--;
-      }
-      player *= -1;
-    }
-    if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
-      let count = gridClicked;
-      while(grid[count][2] !== player) {
-        grid[count][2] = player;
-        count++;
-      }
-      player *= -1;
-    }
-  }
-  if(isHorizontal(gridClicked)) {
-    if(isClickRight() && grid[gridClicked + 8][2] === player * -1) {
-      let count = gridClicked;
-      while(grid[count][2] !== player) {
-        grid[count][2] = player;
-        count += 8;
-      }
-      player *= -1;
-    }
-    if(!isClickRight() && grid[gridClicked - 8][2] === player * -1) {
-      let count = gridClicked;
-      while(grid[count][2] !== player) {
-        grid[count][2] = player;
-        count -= 8;
-      }
-      player *= -1;
-    }
-  }
-  //if(isDiagonal(gridClicked) && ) {
-    
-  //}
+  checkHorizontal();
+  checkVertical();
+  checkDiagonal();
+  clack.play();
 }
 
+// Makes the vertical tokens if it should.
+function checkVertical() {
+  if(isItAbove() && grid[gridClicked - 1][2] === player * -1) {
+    let count = gridClicked;
+    while(grid[count][2] !== player) {
+      grid[count][2] = player;
+      count--;
+    }
+    player *= -1;
+  }
+  if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
+    let count = gridClicked;
+    while(grid[count][2] !== player) {
+      grid[count][2] = player;
+      count++;
+    }
+    player *= -1;
+  }
+}
 
+// Sets the horizontal tokens if it should. 
+function checkHorizontal() {
+  if(isClickRight() && grid[gridClicked + 8][2] === player * -1) {
+    let count = gridClicked;
+    while(grid[count][2] !== player) {
+      grid[count][2] = player;
+      count += 8;
+    }
+    player *= -1;
+  }
+  if(isClickLeft() && grid[gridClicked - 8][2] === player * -1) {
+    let count = gridClicked;
+    while(grid[count][2] !== player) {
+      grid[count][2] = player;
+      count -= 8;
+    }
+    player *= -1;
+  }
+}
+
+// Sets the diagonal if it should. 
+function checkDiagonal() {
+  if(isDiagonal(gridClicked)) {
+    if(topRight()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count += 7;
+      }
+      player *= -1;
+    }
+    if(bottomRight()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count += 9;
+      }
+      player *= -1;
+    }
+    if(topLeft()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count -= 9;
+      }
+      player *= -1;
+    }
+    if(bottomLeft()) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count -= 7;
+      }
+      player *= -1;
+    }
+  }
+  
+}
 
 // Checks if the square the mouse clicked and the next
 // token is above or below.
@@ -371,10 +426,21 @@ function nextMultipleOfEight(x) {
       return x;
     }
   }
+  return x;
+}
+
+// Checks if it click is above the token.
+function isItAbove() {
+  for(let i = gridClicked; i > lowestMultipleOfEight(gridClicked); i--) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Checks if the place the mouse clicked and the
-// horizontal token is right or left. 
+// horizontal token is right.
 function isClickRight() {
   for(let i = gridClicked; i < grid.length - sqrt(totalSquares); i += sqrt(totalSquares)) {
     if(grid[i][2] === player) {
@@ -384,6 +450,69 @@ function isClickRight() {
   return false;
 }
 
+// Checks if click is left of next token. 
+function isClickLeft() {
+  for(let i = gridClicked; i > 0; i -= sqrt(totalSquares)) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Checks if click is diagonally top right. 
+function topRight() {
+  for(let i = gridClicked; i < grid.length - 1; i += 7) { 
+    if(grid[i][2] === player) { 
+      return true; 
+    } 
+    if(i % 8 === 7) {
+      return false;
+    }
+  } 
+  return false;
+}
+
+// Checks if click is diagonally bottom right. 
+function bottomRight() {
+  for(let i = gridClicked; i < grid.length - 1; i += 9) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+    if(i % 8 === 7) {
+      return false;
+    }
+  }
+  return false;
+}
+
+// Checks if click is diagonally top left. 
+function topLeft() {
+  for(let i = gridClicked; i > 0; i -= 9) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+    if(i % 8 === 7) {
+      return false;
+    }
+  }
+  return false;
+}
+
+// Checks if click is diagonally bottom left. 
+function bottomLeft() {
+  for(let i = gridClicked; i > 0; i -= 7) {
+    if(grid[i][2] === player) {
+      return true;
+    }
+    if(i % 8 === 7) {
+      return false;
+    }
+  }
+  return false;
+}
+
+// Checks if anyone has won. 
 function checkForWin() {
   for(let i = 0; i < grid.length; i++) {
     if(grid[i][2] === 0) {
