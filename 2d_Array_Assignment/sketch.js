@@ -130,7 +130,7 @@ function currentPlayer() {
   else if(player === -1) {
     fill(0);
   }
-  circle(grid[grid.length - 1][0] + squaresSize + sideBarWidth / 2, grid[0][1] + squaresSize / 2, squaresSize / 2);
+  circle(width - (width - grid[grid.length - 1] / 2) + squaresSize / 2, grid[0][1] + squaresSize / 2, squaresSize / 2);
 }
 
 // This function diplays a token if it should.
@@ -263,7 +263,6 @@ function smallestDiagonal(startNum) {
 
 // Goes to the largest diagonal
 function largestDiagonal(startNum) {
-  //
   let num = startNum; 
   while(num < grid.length - 1) {
     num += 7;
@@ -571,11 +570,12 @@ function repairOnWindowSizeChange() {
 
 //Remember to delete this debug code when finished with project
 function getCurrentSquare() {
-  for(let i = grid.length - 1; i > 0; i--) {
+  for(let i = grid.length - 1; i > -1; i--) {
     if(mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize) {
       return i;
     }
   }
+  return "Out Of Bounds";
 }
 
 // This is the make button function that makes a button
