@@ -9,7 +9,7 @@
 // determine the place of the grid, the square size, the total
 // amount of square, the current plyer, the grid that was clicked
 // the side bar width, and the 
-let grid = [], squaresSize, totalSquares, player, gridClicked /*, sideBarWidth, buttons = []*/;
+let grid = [], squaresSize, totalSquares, player, gridClicked, whoWins, sideBarWidth, endScreenColor = [] /*, buttons = []*/;
 
 // A test variable for the make button function.
 // let checkVariable = false;
@@ -23,11 +23,16 @@ function setup() {
   totalSquares = 64;
   player = 1;
   squaresSize = height / sqrt(totalSquares);
+  sideBarWidth = squaresSize * 2;
+  whoWins = 0;
   makeGrid(totalSquares, squaresSize);
   grid[27][2] = 1;
   grid[28][2] = -1;
   grid[35][2] = -1;
   grid[36][2] = 1;
+  endScreenColor.push(255);
+  endScreenColor.push(255);
+  endScreenColor.push(255);
   
   // This also has to do with my want to build a make button 
   // function. 
@@ -57,10 +62,26 @@ function draw() {
   // }
   // makeButton(width - 100, height - 100, 100, 100, checkVariable);
   
-  if(height < width) {
+  if(height + sideBarWidth < width && !checkForWin()) {
     displayGrid();
-    if(shouldShowToken()) {
+    currentPlayer();
+    if(shouldShowToken() && mouseX > 0 && mouseY > 0 && mouseX < sqrt(totalSquares) * squaresSize && mouseY < sqrt(totalSquares) * squaresSize) {
       tokenDisplay();
+    }
+  }
+  else if (checkForWin()) {
+    frameRate(1);
+    background(color(random(100, 255),random(100, 255),random(100, 255)));
+    fill(0);
+    textSize(20);
+    if(whoWins === 1) {
+      text("Player One has Won!", width / 2 - textWidth("Player One has Won!") / 2, height / 2 - (textAscent("Player One has Won!") + textDescent("Player One has Won!")) / 2);
+    }
+    else if(whoWins === -1) {
+      text("Player One has Won!", width / 2 - textWidth("Player Two has Won!") / 2, height / 2 - (textAscent("Player Two has Won!") + textDescent("Player Two has Won!")) / 2);
+    } 
+    else if(whoWins === "No Win") {
+      text("There is a tie", width / 2 - textWidth("There is a tie") / 2, height / 2 - (textAscent("There is a tie") + textDescent("There is a tie")) / 2);
     }
   }
   else {
@@ -68,10 +89,11 @@ function draw() {
     fill(0);
     text("Please make your window width larger", width / 2 - textWidth("Please make your window width larger") / 2, height / 2 - (textAscent("Please make your window width larger") + textDescent("Please make your window width larger")) / 2);
   }
+  winner();
 }
 
 //Checks if token should be shown.
-let shouldShowToken = () => mouseX >= grid[8][0] && mouseY >= grid[8][1] && mouseX < grid[grid.length - 8][0] && mouseY < grid[grid.length - 8][0];
+let shouldShowToken = () => mouseX > grid[8][0] && mouseY > grid[8][1] && mouseX < grid[grid.length - 1][0] + squaresSize && mouseY < grid[grid.length - 1][1] + squaresSize;
 
 // Sets up the grid.
 function displayGrid() {
@@ -89,9 +111,19 @@ function displayGrid() {
   }
 }
 
+function currentPlayer() {
+  if(player === 1) {
+    fill("red");
+  }
+  else if(player === -1) {
+    fill(0);
+  }
+  circle(grid[grid.length - 1][0] + squaresSize + sideBarWidth / 2, grid[0][1] + squaresSize / 2, squaresSize / 2);
+}
+
 // This function diplays a token if it should.
 function tokenDisplay() {
-  for(let i = grid.length - 1; i > 0; i--) {
+  for(let i = grid.length - 2; i > 0; i--) {
     if(shouldDisplay(i)) {
       if(player === 1) {
         fill("red");
@@ -107,15 +139,40 @@ function tokenDisplay() {
 
 // Checks if a token should be displayed where the mouse is
 // hovering over. 
-let shouldDisplay = (i) => whichGridIsMouse(i) && mouseInPlayers(i) && (isVertical(i) && (grid[i - 1][2] === player * - 1 || grid[i + 1][2] === player * -1) || isHorizontal(i) && (grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1));
+let shouldDisplay = (i) => whichGridIsMouse(i) && mouseInPlayers(i) && (isVertical(i) && touchingOtherPlayerToken("Vertical", i) || isHorizontal(i) && touchingOtherPlayerToken("Horizontal", i) || isDiagonal(i) && touchingOtherPlayerToken("Diagonal", i));
 
 // Return true; if mouse is currently in the array[i] of the
 // grid array.
-let whichGridIsMouse = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX <= grid[i][0] + squaresSize && mouseY <= grid[i][1] + squaresSize;
+let whichGridIsMouse = (i) => mouseX >= grid[i][0] && mouseY >= grid[i][1] && mouseX < grid[i][0] + squaresSize && mouseY < grid[i][1] + squaresSize;
 
 // Returns true if mouse is not on a player. Else it will return
 // false. 
 let mouseInPlayers = (i) => grid[i][2] !== player && grid[i][2] !== player * -1;
+
+// Checks if place in grid is touching another player's token.
+function touchingOtherPlayerToken(whichOption, i) {
+  try {
+    if(whichOption === "Vertical") {
+      if(grid[i - 1][2] === player * - 1 || grid[i + 1][2] === player * -1) {
+        return true;
+      }
+    }
+    else if(whichOption === "Horizontal") {
+      if(grid[i - 8][2] === player * -1 || grid[i + 8][2] === player * -1) {
+        return true;
+      }
+    }
+    else if(whichOption === "Diagonal") {
+      if(grid[i - 7][2] === player * -1 || grid[i + 7][2] === player * -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+  catch (err) {
+    return false;
+  }
+}
 
 // Looks for token in the same column.
 function isVertical(x) {
@@ -160,6 +217,50 @@ function lowestPossible(x) {
   return x;
 }
 
+// Finds if there is another of the player's token diagonal
+function isDiagonal(startNum) {
+  try {
+    for(let i = smallestDiagonal(startNum); i < grid.length - sqrt(totalSquares); i += 7) { 
+      if(grid[i][2] === player) { 
+        return true; 
+      } 
+    } 
+    for(let i = largestDiagonal(startNum); i > grid.length; i -= 7) {
+      if(grid[i][2] === player) {
+        return true;
+      }
+    }
+  } 
+  catch (error) {
+    return false;
+  }
+  return false;
+}
+
+// Goes to the lowest diagonal place
+function smallestDiagonal(startNum) {
+  let num = startNum;
+  while (num > 0) {
+    num -= 7;
+    if (num < 0) {
+      return num + 7;
+    }
+  }
+  return num;
+}
+
+// Goes to the largest diagonal
+function largestDiagonal(startNum) {
+  //
+  let num = startNum; 
+  while(num < grid.length - 1) {
+    num += 7;
+    if (num > grid.length -1) {
+      return num + 7;
+    }
+  }
+  return num;
+}
 
 // This function on mouse click will check if it should
 // call the activate move function which will place
@@ -180,23 +281,47 @@ function mouseClicked() {
   // }
 }
 
+function winner() {
+  if(checkForWin()) {
+    let playerOne = 0; 
+    let playerTwo = 0; 
+    for(let i = 0; i < grid.length; i++) {
+      if(grid[i][2] === 1) {
+        playerOne++;
+      } 
+      else if(grid[i][2] === -1) {
+        playerTwo++;
+      }
+    }
+    if(playerOne > playerTwo) {
+      whoWins = 1;
+    }
+    else if(playerOne < playerTwo) {
+      whoWins = -1;
+    }
+    else if(playerOne === playerTwo) {
+      whoWins = "No Win";
+    }
+  }
+}
+
 // Checks if a token may be placed, then places the token/tokens.
 // Lastly, it will change the player. 
 function activateMove() {
-  if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
-    let count = gridClicked;
-    while(grid[count][2] !== player) {
-      grid[count][2] = player;
-      count++;
-    }
-    player *= -1;
-  }
   if(isVertical(gridClicked)) {
     if(!isItBelow() && grid[gridClicked - 1][2] === player * -1) {
       let count = gridClicked;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count--;
+      }
+      player *= -1;
+    }
+    if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
+      let count = gridClicked;
+      while(grid[count][2] !== player) {
+        grid[count][2] = player;
+        count++;
       }
       player *= -1;
     }
@@ -219,22 +344,12 @@ function activateMove() {
       player *= -1;
     }
   }
-  //if(isDiagonal()) {
+  //if(isDiagonal(gridClicked) && ) {
+    
   //}
 }
 
-function isDiagonal() {
-  for(let i = gridClicked; i < grid.length - sqrt(totalSquares); i+= 7) {
-    if(grid[i][2] === player) {
-      return true;
-    }
-  }
-  return false;
-}
 
-function ifSmaller() {
-  //
-}
 
 // Checks if the square the mouse clicked and the next
 // token is above or below.
@@ -267,6 +382,15 @@ function isClickRight() {
     }
   }
   return false;
+}
+
+function checkForWin() {
+  for(let i = 0; i < grid.length; i++) {
+    if(grid[i][2] === 0) {
+      return false;
+    }
+  }
+  return true;
 }
 
 // This function was inteded to check if mouse is inside
