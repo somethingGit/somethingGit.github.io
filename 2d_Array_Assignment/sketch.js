@@ -22,16 +22,16 @@ let grid = [], squaresSize, totalSquares, player, gridClicked, whoWins, sideBarW
 // A test variable for the make button function.
 // let checkVariable = false;
 
-// This is the setup function. It will create a canvas as large
-// as the window width and window height. It will then set the 
-// values of the global variables and will setup the starting
-// tokens. 
-
+// This is the preload function. It sets the file formats and loads the sound to a variable. 
 function preload() {
   soundFormats("ogg");
   clack = loadSound("Assets/clack.ogg");
 }
 
+// This is the setup function. It will create a canvas as large
+// as the window width and window height. It will then set the 
+// values of the global variables and will setup the starting
+// tokens. 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   totalSquares = 64;
@@ -322,7 +322,6 @@ function winner() {
 // Checks if a token may be placed, then places the token/tokens.
 // Lastly, it will change the player. 
 function activateMove() {
-  grid[gridClicked][2] = player;
   checkHorizontal();
   checkVertical();
   checkDiagonal();
@@ -333,17 +332,21 @@ function activateMove() {
 // Makes the vertical tokens if it should.
 function checkVertical() {
   if(isItAbove() && grid[gridClicked - 1][2] === player * -1) {
-    let count = gridClicked - 1;
+    let count = gridClicked;
+    count--;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
+      grid[gridClicked][2] = player;
       count--;
     }
   }
   if(isItBelow() && grid[gridClicked + 1][2] === player * -1) {
-    let count = gridClicked + 1;
+    let count = gridClicked;
+    count++;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count++;
+      grid[gridClicked][2] = player;
     }
   }
 }
@@ -351,17 +354,21 @@ function checkVertical() {
 // Sets the horizontal tokens if it should. 
 function checkHorizontal() {
   if(isClickRight() && grid[gridClicked + 8][2] === player * -1) {
-    let count = gridClicked + 8;
+    let count = gridClicked;
+    count += 8;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count += 8;
+      grid[gridClicked][2] = player;
     }
   }
   if(isClickLeft() && grid[gridClicked - 8][2] === player * -1) {
-    let count = gridClicked - 8;
+    let count = gridClicked;
+    count -= 8;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count -= 8;
+      grid[gridClicked][2] = player;
     }
   }
 }
@@ -370,31 +377,39 @@ function checkHorizontal() {
 function checkDiagonal() {
   if(isDiagonal(gridClicked)) {
     if(topRight()) {
-      let count = gridClicked + 7;
+      let count = gridClicked;
+      count += 7;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count += 7;
+        grid[gridClicked][2] = player;
       }
     }
     if(bottomRight()) {
-      let count = gridClicked + 9;
+      let count = gridClicked;
+      count += 9;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count += 9;
+        grid[gridClicked][2] = player;
       }
     }
     if(topLeft()) {
-      let count = gridClicked - 9;
+      let count = gridClicked;
+      count -= 9;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count -= 9;
+        grid[gridClicked][2] = player;
       }
     }
     if(bottomLeft()) {
-      let count = gridClicked - 7;
+      let count = gridClicked;
+      count -= 7;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count -= 7;
+        grid[gridClicked][2] = player;
       }
     }
   }
