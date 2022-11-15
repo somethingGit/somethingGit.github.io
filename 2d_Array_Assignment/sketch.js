@@ -130,7 +130,7 @@ function currentPlayer() {
   else if(player === -1) {
     fill(0);
   }
-  circle(width - (width - grid[grid.length - 1] / 2) + squaresSize / 2, grid[0][1] + squaresSize / 2, squaresSize / 2);
+  circle(grid[grid.length - 1][0] + squaresSize + sideBarWidth / 2, grid[0][1] + squaresSize / 2, squaresSize / 2);
 }
 
 // This function diplays a token if it should.
@@ -175,7 +175,16 @@ function touchingOtherPlayerToken(whichOption, i) {
       }
     }
     else if(whichOption === "Diagonal") {
-      if(grid[i - 7][2] === player * -1 || grid[i + 7][2] === player * -1) {
+      if(grid[i - 7][2] === player * -1) {
+        return true;
+      }
+      else if(grid[i + 7][2] === player * -1) {
+        return true;
+      }
+      else if(grid[i - 9][2] === player * -1) {
+        return true;
+      }
+      else if(grid[i + 9][2] === player * -1) {
         return true;
       }
     }
@@ -191,7 +200,7 @@ function isVertical(x) {
   for(let i = lowestMultipleOfEight(x); i < lowestMultipleOfEight(x) + sqrt(totalSquares); i++) {
     if(grid[i][2] === player) {
       return true;
-    }
+    } 
   }
   return false;
 }
@@ -220,10 +229,10 @@ function isHorizontal(x) {
 
 // Finds the lowest x can go without becoming negative.
 function lowestPossible(x) {
-  while(x >= 8) {
+  while(x > 0) {
     x -= 8;
-    if(x < 8) {
-      return x;
+    if(x < 0) {
+      return x + 8;
     }
   }
   return x;
@@ -232,12 +241,12 @@ function lowestPossible(x) {
 // Finds if there is another of the player's token diagonal
 function isDiagonal(startNum) {
   try {
-    for(let i = smallestDiagonal(startNum); i < grid.length - sqrt(totalSquares); i += 7) { 
+    for(let i = smallestDiagonal(startNum); i < grid.length; i += 7) { 
       if(grid[i][2] === player) { 
         return true; 
       } 
     } 
-    for(let i = largestDiagonal(startNum); i > grid.length; i -= 7) {
+    for(let i = largestDiagonal(startNum); i > -1; i -= 9) {
       if(grid[i][2] === player) {
         return true;
       }
@@ -252,7 +261,7 @@ function isDiagonal(startNum) {
 // Goes to the lowest diagonal place
 function smallestDiagonal(startNum) {
   let num = startNum;
-  while (num > 0) {
+  while (num > -1) {
     num -= 7;
     if (num < 0) {
       return num + 7;
@@ -265,9 +274,9 @@ function smallestDiagonal(startNum) {
 function largestDiagonal(startNum) {
   let num = startNum; 
   while(num < grid.length - 1) {
-    num += 7;
-    if (num > grid.length -1) {
-      return num + 7;
+    num += 9;
+    if (num > grid.length) {
+      return num - 9;
     }
   }
   return num;
@@ -276,11 +285,11 @@ function largestDiagonal(startNum) {
 // This function on mouse click will check if it should
 // call the activate move function which will place
 // down the tokens.
-function mouseClicked() {
+function mousePressed() {
   if(mouseInPlayers(gridClicked) && shouldShowToken()) {
     activateMove();
   }
-  console.log("Mouse was clicked");
+  
   // for(let i = 0; i < buttons.length; i++) {
   //   if(checkForButtonClick(i)) {
   //     if(buttons[i][5] === false) {
@@ -324,6 +333,7 @@ function activateMove() {
   checkHorizontal();
   checkVertical();
   checkDiagonal();
+  grid[gridClicked][2] = player;
   clack.play();
   player *= -1;
 }
@@ -335,7 +345,6 @@ function checkVertical() {
     count--;
     while(grid[count][2] !== player) {
       grid[count][2] = player;
-      grid[gridClicked][2] = player;
       count--;
     }
   }
@@ -345,7 +354,6 @@ function checkVertical() {
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count++;
-      grid[gridClicked][2] = player;
     }
   }
 }
@@ -358,7 +366,6 @@ function checkHorizontal() {
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count += 8;
-      grid[gridClicked][2] = player;
     }
   }
   if(isClickLeft() && grid[gridClicked - 8][2] === player * -1) {
@@ -367,7 +374,6 @@ function checkHorizontal() {
     while(grid[count][2] !== player) {
       grid[count][2] = player;
       count -= 8;
-      grid[gridClicked][2] = player;
     }
   }
 }
@@ -375,40 +381,32 @@ function checkHorizontal() {
 // Sets the diagonal if it should. 
 function checkDiagonal() {
   if(isDiagonal(gridClicked)) {
-    if(topRight()) {
-      let count = gridClicked;
-      count += 7;
+    if(topRight() && grid[gridClicked + 7][2] === player * -1) {
+      let count = gridClicked + 7;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count += 7;
-        grid[gridClicked][2] = player;
       }
     }
-    if(bottomRight()) {
-      let count = gridClicked;
-      count += 9;
+    if(bottomRight() && grid[gridClicked + 9][2] === player * -1) {
+      let count = gridClicked + 9;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count += 9;
-        grid[gridClicked][2] = player;
       }
     }
-    if(topLeft()) {
-      let count = gridClicked;
-      count -= 9;
+    if(topLeft() && grid[gridClicked - 9][2] === player * -1) {
+      let count = gridClicked - 9;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count -= 9;
-        grid[gridClicked][2] = player;
       }
     }
-    if(bottomLeft()) {
-      let count = gridClicked;
-      count -= 7;
+    if(bottomLeft() && grid[gridClicked - 7][2] === player * -1) {
+      let count = gridClicked - 7;
       while(grid[count][2] !== player) {
         grid[count][2] = player;
         count -= 7;
-        grid[gridClicked][2] = player;
       }
     }
   }
@@ -522,7 +520,26 @@ function bottomLeft() {
 }
 
 // Checks if anyone has won. 
-function checkForWin() {
+function checkForWin() { 
+  let player1Count = 0;
+  let player2Count = 0;
+  for(let i = 0; i< grid.length; i++) {
+    if(grid[i][2] === 1) {
+      player1Count++;
+    }
+    else if(grid[i][2] === -1) {
+      player2Count++;
+    }
+  }
+  
+  if(player1Count === 0 ) {
+    return true;
+  }
+  else if(player2Count === 0) {
+    return true;
+  }
+  
+  
   for(let i = 0; i < grid.length; i++) {
     if(grid[i][2] === 0) {
       return false;
