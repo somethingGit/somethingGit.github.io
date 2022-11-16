@@ -31,15 +31,21 @@ class Fireworks {
   colorUpdate() {
     this.transparency -= random(1);
     this.color = color(this.r,this.g,this.b,this.transparency);
-    if(this.transparency < 0 || this.x < 0 - this.diameter || this.x > width + this.diameter || this.y < 0 - this.diameter || this.y > height + this.diameter) {
-      fireWorkArray.pop(this.arrayLocation);
-    }
   }
   
   display() {
     fill(this.color);
     stroke(this.color);
     circle(this.x, this.y, this.diameter);
+  }
+  
+  removeParticle() {
+    if(this.transparency <= 0 || this.x < 0 - this.diameter || this.x > width + this.diameter || this.y < 0 - this.diameter || this.y > height + this.diameter) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
   
 }
@@ -50,12 +56,16 @@ function setup() {
 
 function draw() {
   background(255);
-  for(let i = 0; i < fireWorkArray.length; i++) {
-    fireWorkArray[i].move();
-    fireWorkArray[i].display();
-    fireWorkArray[i].colorUpdate();
+  for(let i = fireWorkArray.length; i > 0; i--) {
+    if(fireWorkArray[i].removeParticle()) {
+      fireWorkArray.splice(1,1);
+    }
+    else {
+      fireWorkArray[i].move();
+      fireWorkArray[i].display();
+      fireWorkArray[i].colorUpdate();
+    }
   }
-  console.log(fireWorkArray);
 }
 
 function mouseReleased() {
@@ -65,6 +75,19 @@ function mouseReleased() {
 function makeFireWorks() {
   for(let i = 0; i < 125; i++) {
     let particles = new Fireworks(mouseX, mouseY, i);
+    fireWorkArray.push(particles);
+  }
+}
+
+function keyPressed() {
+  makeRandomFireWorks();
+}
+
+function makeRandomFireWorks() {
+  let randomWidth = random(width);
+  let randomHeight = random(height);
+  for(let i = 0; i < 125; i++) {
+    let particles = new Fireworks(randomWidth, randomHeight, i);
     fireWorkArray.push(particles);
   }
 }
