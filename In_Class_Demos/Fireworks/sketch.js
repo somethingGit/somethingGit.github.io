@@ -5,6 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+
 let fireWorkArray = [];
 
 class Fireworks {
@@ -28,9 +29,9 @@ class Fireworks {
   }
   
   colorUpdate() {
-    this.transparency-=0.5;
+    this.transparency -= random(1);
     this.color = color(this.r,this.g,this.b,this.transparency);
-    if(this.transparency === 0 || this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+    if(this.transparency < 0 || this.x < 0 - this.diameter || this.x > width + this.diameter || this.y < 0 - this.diameter || this.y > height + this.diameter) {
       fireWorkArray.pop(this.arrayLocation);
     }
   }
@@ -48,21 +49,22 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(255);
   for(let i = 0; i < fireWorkArray.length; i++) {
     fireWorkArray[i].move();
     fireWorkArray[i].display();
     fireWorkArray[i].colorUpdate();
   }
+  console.log(fireWorkArray);
 }
 
-function mousePressed() {
+function mouseReleased() {
   makeFireWorks();
 }
 
 function makeFireWorks() {
-  for(let i = 0; i < 150; i++) {
-    let particles = new Fireworks(mouseX, mouseY, fireWorkArray.length);
+  for(let i = 0; i < 125; i++) {
+    let particles = new Fireworks(mouseX, mouseY, i);
     fireWorkArray.push(particles);
   }
 }
