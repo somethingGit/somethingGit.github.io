@@ -5,13 +5,15 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+let bulletImg;
 const bulletSpeed = 30;
+let bulletWidth = 25;
+let bulletHeight = 15;
 
 class Bullets {
-  constructor(y) {
-    this.diameter = 15;
-    this.y = y;
-    this.x = 0 - this.diameter + 1;
+  constructor() {
+    this.y = height / 2 - bulletHeight  / 2;
+    this.x = 0 - bulletWidth + 1;
     this.dx = bulletSpeed;
   }
   
@@ -21,15 +23,19 @@ class Bullets {
   
   display() {
     fill("yellow");
-    circle(this.x, this.y, this.diameter);
+    image(bulletImg, this.x, this.y);
   }
   
   remove() {
-    return this.x > width + this.diameter;
+    return this.x > width;
   }
 }
 
 let bulletArray = [];
+
+function preload() {
+  bulletImg = loadImage("Assets/bullet.png");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -53,12 +59,12 @@ function displayBullets() {
 }
 
 function mouseReleased() {
-  let bullet = new Bullets(mouseY);
+  let bullet = new Bullets();
   bulletArray.push(bullet);
 }
 
 function keyPressed() {
-  let bullet = new Bullets(mouseY);
+  let bullet = new Bullets();
   bulletArray.push(bullet);
 }
 
