@@ -12,22 +12,20 @@ function setup() {
   console.timeEnd();
 }
 
-function draw() {
-  background(220);
-}
-
 function bubbleSort(list) { 
   let notSorted = false;
+  let listFinished = 1;
   while(notSorted === false) {
-    for(let i = 0; i < list.length - 1; i++) {
+    for(let i = 0; i < list.length - listFinished; i++) {
       list[i] < list[i + 1] ? list = bubbleSortLoop(list) : notSorted = true;
+      listFinished++;
     }
   }
   return list;
 }
 
 function bubbleSortLoop(list) {
-  for(i = 0; i < list.length - 1; i++) {
+  for(let i = 0; i < list.length - 1; i++) {
     if(list[i] > list[i + 1]) {
       let switchThis = list[i];
       list[i] = list[i + 1];
