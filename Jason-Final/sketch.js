@@ -54,26 +54,24 @@ class Ball {
     this.y += this.dy;
     if(this.x >= width - this.diameter / 2) {
       this.dx *= -1;
-      //this.x = width - this.diameter / 2 - 1;
+      this.x = width - this.diameter / 2 - 1;
     }
     if(this.x <= 0 + this.diameter / 2) {
       this.dx *= -1;
-      //this.x = 0 + this.diameter / 2 + 1;
+      this.x = 0 + this.diameter / 2 + 1;
     }
     if(this.y >= height - this.diameter / 2) {
       this.dy *= -1;
-      //this.y = height - this.diameter / 2 - 1;
+      this.y = height - this.diameter / 2 - 1;
     }
     if(this.y <= 0 + this.diameter / 2) {
       this.dy *= -1;
-      //this.y = 0 + this.diameter / 2 + 1;
+      this.y = 0 + this.diameter / 2 + 1;
     }
   }
   
   isPressed() {
-    if(dist(mouseX, mouseY, this.x, this.y) < this.diameter / 2) {
-      return true;
-    }
+    return dist(mouseX, mouseY, this.x, this.y) < this.diameter / 2 ? true : false;
   }
 }
 
