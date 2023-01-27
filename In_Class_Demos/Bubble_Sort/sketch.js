@@ -2,7 +2,7 @@
 // Jason
 // 01/09/2023
 
-let someArray = [5, 15, 3, 8, 9, 1, 20, 7];
+let someArray = [11, 7, 3, 14, 8, 6, 9, 2];
 
 function setup() {
   createCanvas(400, 400);
@@ -32,5 +32,6 @@ function bubbleSortLoop(list) {
       list[i + 1] = switchThis;
     }
   }
+  console.log(list);
   return list;
 }
