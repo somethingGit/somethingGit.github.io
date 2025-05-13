@@ -4,8 +4,7 @@
 
 let someArray = [11, 7, 3, 14, 8, 6, 9, 2];
 
-function setup() {
-  createCanvas(400, 400);
+function main() {
   console.log(someArray);
   console.time();
   console.log(bubbleSort(someArray));
@@ -35,3 +34,5 @@ function bubbleSortLoop(list) {
   console.log(list);
   return list;
 }
+
+main()

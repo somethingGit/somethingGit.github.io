@@ -4,9 +4,8 @@
 
 let someArray = [5, 15, 3, 8, 9, 1, 20, 7];
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  selectionSort(someArray);
+function main() {
+  console.log(selectionSort(someArray));
 }
 
 function selectionSort(list) {
@@ -25,3 +24,5 @@ function selectionSort(list) {
   }
   return list;
 }
+
+main();
